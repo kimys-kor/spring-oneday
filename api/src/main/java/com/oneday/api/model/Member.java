@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 public class Member extends BaseTime {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "MEMBER_ID")
     private Long id;
 
     private String password;
