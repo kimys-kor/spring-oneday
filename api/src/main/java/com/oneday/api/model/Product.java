@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,30 +13,25 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class Member extends BaseTime {
+@Setter
+public class Product extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MEMBER_ID")
+    @Column(name = "PRODUCT_ID")
     private Long id;
 
-    private String password;
-
-    private String phoneNum;
-    private String email;
-    private String nickname;
-
-
-    @ColumnDefault("0")
-    private int point;
+    @ManyToOne
+    private Shop shop;
 
     @Enumerated(EnumType.STRING)
-    private MemberStatus status;
+    private ProductCategory productCategory;
 
-    @OneToMany(mappedBy = "member")
-    private List<Orders> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "product")
+    private List<OrdersProduct> ordersProducts = new ArrayList<>();
 
+    private int price;
 
-
+    private int stock;
 
 }
