@@ -4,28 +4,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 
-public class Response<T> extends ResponseEntity<ResponseBody> {
-    public Response() {
-        super(new ResponseBody<T>(HttpStatus.OK, null, null, null), HttpStatus.OK);
-    }
-
-    public Response(T body) {
-        super(new ResponseBody<>(HttpStatus.OK, null, null, body), HttpStatus.OK);
+public class Response<T> extends ResponseEntity<ResponseBody<T>> {
+    public Response(HttpStatus status, ResultCode resultCode, T data) {
+        super(new ResponseBody<>(status, resultCode.getStatusCode(), resultCode.getStatusMessage(), data), status);
     }
 
     public Response(ResultCode resultCode) {
-        super(new ResponseBody<>(resultCode.getStatus(), resultCode.getStatusCode(), resultCode.getStatusMessage(), null), HttpStatus.OK);
+        this(resultCode.getStatus(), resultCode, null);
     }
 
-    public Response(@Nullable T body, HttpStatus status) {
-        super(new ResponseBody<>(status, null, null, body), status);
+    public Response(T data) {
+        this(HttpStatus.OK, ResultCode.DATA_NORMAL_PROCESSING, data);
     }
 
-    public Response(@Nullable T body, ResultCode resultCode) {
-        super(new ResponseBody<>(resultCode.getStatus(), resultCode.getStatusCode(), resultCode.getStatusMessage(), body), HttpStatus.OK);
-    }
-
-    public Response(@Nullable T body, HttpStatus status, ResultCode resultCode) {
-        super(new ResponseBody<>(status, resultCode.getStatusCode(), resultCode.getStatusMessage(), body), HttpStatus.OK);
+    public Response(ResultCode resultCode, T data) {
+        this(resultCode.getStatus(), resultCode, data);
     }
 }

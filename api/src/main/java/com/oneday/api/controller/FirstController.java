@@ -12,6 +12,6 @@ public class FirstController {
     public Response<Object> Test(
     ) {
 
-        return new Response<>("hi",ResultCode.DATA_NORMAL_PROCESSING);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 }
