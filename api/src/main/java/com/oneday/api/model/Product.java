@@ -21,7 +21,7 @@ public class Product extends BaseTime {
     @Column(name = "PRODUCT_ID")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Shop shop;
 
     @Enumerated(EnumType.STRING)

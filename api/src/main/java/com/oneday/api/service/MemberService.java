@@ -14,6 +14,11 @@ public class MemberService {
     MemberRepository memberRepository;
 
     public Optional<Member> findById(Long id) {
-        return memberRepository.findById(id);
+
+        Optional<Member> byId = memberRepository.findById(id);
+
+        System.out.println(byId);
+
+        return byId;
     }
 }
