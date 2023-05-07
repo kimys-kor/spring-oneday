@@ -9,11 +9,11 @@ import java.util.Collection;
 
 
 // Security Session => Authentication => userDetails
-public class MyUserDetail implements UserDetails {
+public class MyUserDetails implements UserDetails {
 
     private Member member;
 
-    public MyUserDetail(Member member) {
+    public MyUserDetails(Member member) {
         this.member = member;
     }
 

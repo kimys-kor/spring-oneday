@@ -8,7 +8,8 @@ import com.oneday.api.model.Member;
 import com.oneday.api.model.dto.MemberDto;
 import com.oneday.api.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -31,8 +32,8 @@ public class MemberController {
     }
 
     @GetMapping(value = "/login")
-    public Response<Object> login() {
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,"로그인이 완료 되었습니다");
+    public Response<Object> login(@AuthenticationPrincipal UserDetails userDetails) {
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,userDetails.getUsername());
     }
 
     @GetMapping(value = "/find")
