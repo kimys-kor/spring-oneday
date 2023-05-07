@@ -17,4 +17,6 @@ public class OrdersProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
+
+
 }
