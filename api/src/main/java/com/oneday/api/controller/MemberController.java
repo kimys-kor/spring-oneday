@@ -23,6 +23,11 @@ public class MemberController {
     @Autowired
     MemberService memberService;
 
+    @GetMapping(value = "/view/user")
+    public String user() {
+        return "hello";
+    }
+
     @PostMapping(value = "/join")
     public Response<Object> join(
             MemberDto memberDto
@@ -40,9 +45,11 @@ public class MemberController {
     public Response<Object> find(
 //            @RequestParam String email
     ) {
-        Optional<Member> byEmail = memberService.findByEmail("wek@naver.com");
+        Member byEmail = memberService.findByEmail("wek@naver.com");
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,byEmail);
     }
+
+
 
 
 }

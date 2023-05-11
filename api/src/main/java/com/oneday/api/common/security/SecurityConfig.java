@@ -1,37 +1,60 @@
 package com.oneday.api.common.security;
 
+import com.oneday.api.common.jwt.JwtAuthenticationFilter;
+import com.oneday.api.common.jwt.JwtAuthorizationFilter;
+import com.oneday.api.repository.MemberRepository;
 import jakarta.servlet.DispatcherType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity // 시큐리티 활성화 -> 기본 스프링 필터체인에 등록
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable().cors().disable()
-                .authorizeHttpRequests(request -> request
-                        .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/member/view/**", "/member/setting/**").hasAnyRole("MEMBER","ADMIN")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().permitAll()
-                )
-                .formLogin(login -> login	// form 방식 로그인 사용
-                        .usernameParameter("email")
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/member/login", true)	// 성공 시
-                        .permitAll()	// 이동이 막히면 안되므로 얘는 허용
-                )
-                .logout(withDefaults());	// 로그아웃은 기본설정으로 (/logout으로 인증해제)
+    @Autowired
+    private MemberRepository memberRepository;
 
-        return http.build();
+    @Autowired
+    private CorsConfig corsConfig;
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .apply(new MyCustomDsl()) // 커스텀 필터 등록
+                .and()
+                .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .and()
+                .authorizeRequests(authroize -> authroize.requestMatchers("/member/view/**")
+                        .access("hasRole('ROLE_MEMBER') or hasRole('ROLE_ADMIN')")
+                        .requestMatchers("/admin/**")
+                        .access("hasRole('ROLE_ADMIN')")
+                        .anyRequest().permitAll())
+                .build();
+    }
+
+    public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
+        @Override
+        public void configure(HttpSecurity http) throws Exception {
+            AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+            http
+                    .addFilter(corsConfig.corsFilter())
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository));
+        }
     }
 
     @Bean

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
@@ -37,6 +38,10 @@ public class Member extends BaseTime {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
+    // oauth를 통해 가입한 회원
+    private String provider;  // google
+    private String providerId; // googleId(primaryKey)
+
     @OneToMany(mappedBy = "member")
     private List<Orders> orders = new ArrayList<>();
 
@@ -46,7 +51,7 @@ public class Member extends BaseTime {
         this.password = password;
         this.nickname = nickname;
         this.phoneNum = phoneNum;
-        this.role = MemberRole.MEMBER;
+        this.role = MemberRole.ROLE_MEMBER;
         this.status = MemberStatus.NORMAL;
     }
 }

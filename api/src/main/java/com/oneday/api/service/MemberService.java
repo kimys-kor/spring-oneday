@@ -4,6 +4,7 @@ import com.oneday.api.model.Member;
 import com.oneday.api.model.dto.MemberDto;
 import com.oneday.api.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +19,9 @@ public class MemberService {
     @Autowired
     MemberRepository memberRepository;
 
-    public Optional<Member> findByEmail(String email) {
-        Optional<Member> byId = memberRepository.findByEmail(email);
+    public Member findByEmail(String email) {
+        Member byId = memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다 ㅠ"));
+        System.out.println();
         return byId;
     }
 
