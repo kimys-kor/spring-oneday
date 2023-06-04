@@ -51,6 +51,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 .getClaim("username").asString();
 
         if (username != null) {
+
             Member byEmail = memberRepository.findByEmail(username).orElseThrow();
 
 

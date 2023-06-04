@@ -19,6 +19,7 @@ public class PrincipalDetailsService implements UserDetailsService {
     // 시큐리티 Session(내부 Authentication(내부 UserDetails))
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        System.out.println("loaduser실행");
         Member findOne = memberService.findByEmail(email);
         return new PrincipalDetails(findOne);
     }

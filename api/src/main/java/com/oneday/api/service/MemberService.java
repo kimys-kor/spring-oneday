@@ -28,7 +28,6 @@ public class MemberService {
 
     public Member findByEmail(String email) {
         Member byId = memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다 ㅠ"));
-        System.out.println();
         return byId;
     }
 

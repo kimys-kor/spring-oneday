@@ -36,9 +36,7 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .apply(new MyCustomDsl()) // 커스텀 필터 등록
                 .and()
-                .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-                .and()
-                .authorizeRequests(authroize -> authroize.requestMatchers("/member/view/**")
+                .authorizeRequests(authroize -> authroize.requestMatchers("/member/**")
                         .access("hasRole('ROLE_MEMBER') or hasRole('ROLE_ADMIN')")
                         .requestMatchers("/admin/**")
                         .access("hasRole('ROLE_ADMIN')")
@@ -49,6 +47,8 @@ public class SecurityConfig {
     public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
         @Override
         public void configure(HttpSecurity http) throws Exception {
+            
+            System.out.println("커스텀필터");
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
                     .addFilter(corsConfig.corsFilter())

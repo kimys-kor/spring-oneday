@@ -19,11 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/member")
 public class MemberController {
 
-
-
     @Autowired
     MemberService memberService;
-
 
     @PostMapping(value = "/join")
     public Response<Object> join(
@@ -33,16 +30,12 @@ public class MemberController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 
-    @GetMapping(value = "/login")
-    public Response<Object> login(@AuthenticationPrincipal UserDetails userDetails) {
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,userDetails.getUsername());
-    }
 
     @GetMapping(value = "/findOne")
     public Response<Object> findOne(
-//            @RequestParam String email
+            @RequestParam String email
     ) {
-        Member byEmail = memberService.findByEmail("wek@naver.com");
+        Member byEmail = memberService.findByEmail(email);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,byEmail);
     }
 
