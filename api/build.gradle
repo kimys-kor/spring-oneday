@@ -50,13 +50,10 @@ tasks.named('test') {
 }
 
 // === ⭐ QueryDsl 빌드 옵셥 ===
-def querydslDir = "$buildDir/generated/querydsl"
-
-sourceSets {
-	main.java.srcDirs += [ querydslDir ]
+def querydslSrcDir = 'src/main/generated'
+clean {
+	delete file(querydslSrcDir)
 }
-
-
-clean.doLast {
-	file(querydslDir).deleteDir()
+tasks.withType(JavaCompile) {
+	options.generatedSourceOutputDirectory = file(querydslSrcDir)
 }

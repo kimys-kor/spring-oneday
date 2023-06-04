@@ -8,11 +8,12 @@ import com.oneday.api.model.Member;
 import com.oneday.api.model.dto.MemberDto;
 import com.oneday.api.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/member")
@@ -23,10 +24,6 @@ public class MemberController {
     @Autowired
     MemberService memberService;
 
-    @GetMapping(value = "/view/user")
-    public String user() {
-        return "hello";
-    }
 
     @PostMapping(value = "/join")
     public Response<Object> join(
@@ -41,12 +38,19 @@ public class MemberController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,userDetails.getUsername());
     }
 
-    @GetMapping(value = "/find")
-    public Response<Object> find(
+    @GetMapping(value = "/findOne")
+    public Response<Object> findOne(
 //            @RequestParam String email
     ) {
         Member byEmail = memberService.findByEmail("wek@naver.com");
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,byEmail);
+    }
+
+    @GetMapping(value = "/findAll")
+    public Response<Object> findAll(Pageable pageable
+                                    ) {
+        Page<MemberDto> all = memberService.findAll(pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
     }
 
 
