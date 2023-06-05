@@ -31,22 +31,6 @@ public class MemberController {
     }
 
 
-    @GetMapping(value = "/findOne")
-    public Response<Object> findOne(
-            @RequestParam String email
-    ) {
-        Member byEmail = memberService.findByEmail(email);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,byEmail);
-    }
-
-    @GetMapping(value = "/findAll")
-    public Response<Object> findAll(Pageable pageable
-                                    ) {
-        Page<MemberDto> all = memberService.findAll(pageable);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
-    }
-
-
 
 
 }

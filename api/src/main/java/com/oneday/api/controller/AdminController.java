@@ -3,28 +3,50 @@ package com.oneday.api.controller;
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
 import com.oneday.api.model.ImgFile;
-import com.oneday.api.service.ImgFileService;
+import com.oneday.api.model.Member;
+import com.oneday.api.model.dto.MemberDto;
+import com.oneday.api.service.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-
-    @Autowired
-    ImgFileService imgFileService;
 
     @Value("${key.imgPath}")
     private String imgPath;
 
     @Value("${key.imgUrl}")
     private String imgUrl;
+
+    @Autowired
+    ImgFileService imgFileService;
+
+    @Autowired
+    MemberService memberService;
+
+    @Autowired
+    ShopService shopService;
+
+    @Autowired
+    ProductService productService;
+
+    @Autowired
+    RiderService riderService;
+
+    @Autowired
+    OrdersService ordersService;
+
 
     @GetMapping(value = "/test")
     public Response<Object> findOne() {
@@ -60,4 +82,26 @@ public class AdminController {
 
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,"upload Success");
     }
+
+    // 멤버 상세
+    @GetMapping(value = "/findOne")
+    public Response<Object> findOne(
+            @RequestParam Long memberId
+    ) {
+        Member byId = memberService.findById(memberId).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다 ㅠ"));
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,byId);
+    }
+
+    // 멤버 리스트
+    @GetMapping(value = "/findAll")
+    public Response<Object> findAll(Pageable pageable
+    ) {
+        Page<MemberDto> all = memberService.findAll(pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
+    }
+
+
+
+
+
 }
