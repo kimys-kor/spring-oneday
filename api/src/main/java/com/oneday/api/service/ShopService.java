@@ -21,9 +21,16 @@ public class ShopService {
 
     public Shop save(ShopRegisterDto shopRegisterDto) {
         Shop shop = Shop.builder()
+                .name(shopRegisterDto.getName())
                 .email(shopRegisterDto.getEmail())
                 .ownerName(shopRegisterDto.getOwnerName())
                 .phoneNum(shopRegisterDto.getPhoneNum())
+                .lat(shopRegisterDto.getLat())
+                .lon(shopRegisterDto.getLon())
+                .si(shopRegisterDto.getSi())
+                .gu(shopRegisterDto.getGu())
+                .dong(shopRegisterDto.getDong())
+                .restAddress(shopRegisterDto.getRestAddress())
                 .build();
         return shopRepository.save(shop);
     }
@@ -35,9 +42,16 @@ public class ShopService {
 
     public Shop update(Long shopId, ShopRegisterDto shopRegisterDto) {
         Shop byId = findById(shopId);
+        byId.setName(shopRegisterDto.getName());
         byId.setEmail(shopRegisterDto.getEmail());
         byId.setOwnerName(shopRegisterDto.getOwnerName());
         byId.setPhoneNum(shopRegisterDto.getPhoneNum());
+        byId.setLat(shopRegisterDto.getLat());
+        byId.setLon(shopRegisterDto.getLon());
+        byId.setSi(shopRegisterDto.getSi());
+        byId.setGu(shopRegisterDto.getGu());
+        byId.setDong(shopRegisterDto.getDong());
+        byId.setRestAddress(shopRegisterDto.getRestAddress());
         return shopRepository.save(byId);
     }
 

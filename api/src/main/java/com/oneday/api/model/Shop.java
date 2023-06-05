@@ -36,6 +36,6 @@ public class Shop extends BaseTime {
     private String gu;
     private String dong;
 
-
+    private String restAddress;
 
 }

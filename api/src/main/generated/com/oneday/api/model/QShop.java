@@ -24,7 +24,11 @@ public class QShop extends EntityPathBase<Shop> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDt = _super.createdDt;
 
+    public final StringPath dong = createString("dong");
+
     public final StringPath email = createString("email");
+
+    public final StringPath gu = createString("gu");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -37,6 +41,10 @@ public class QShop extends EntityPathBase<Shop> {
     public final StringPath ownerName = createString("ownerName");
 
     public final StringPath phoneNum = createString("phoneNum");
+
+    public final StringPath restAddress = createString("restAddress");
+
+    public final StringPath si = createString("si");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDt = _super.updatedDt;
