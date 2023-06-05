@@ -32,5 +32,10 @@ public class Shop extends BaseTime {
 
     private  BigDecimal lon;
 
+    private String si;
+    private String gu;
+    private String dong;
+
+
 
 }

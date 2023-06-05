@@ -1,7 +1,6 @@
 package com.oneday.api.repository;
 
-import com.oneday.api.model.QMember;
-import com.oneday.api.model.dto.MemberDto;
+
 import com.oneday.api.model.dto.ShopReadDto;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
