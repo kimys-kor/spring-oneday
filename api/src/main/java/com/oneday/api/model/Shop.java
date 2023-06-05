@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Shop {
+public class Shop extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
