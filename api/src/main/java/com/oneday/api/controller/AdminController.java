@@ -5,6 +5,8 @@ import com.oneday.api.common.response.ResultCode;
 import com.oneday.api.model.ImgFile;
 import com.oneday.api.model.Member;
 import com.oneday.api.model.dto.MemberDto;
+import com.oneday.api.model.dto.ShopReadDto;
+import com.oneday.api.model.dto.ShopRegisterDto;
 import com.oneday.api.service.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,8 +95,8 @@ public class AdminController {
     }
 
     // 멤버 리스트
-    @GetMapping(value = "/findAll")
-    public Response<Object> findAll(Pageable pageable
+    @GetMapping(value = "/member/findAll")
+    public Response<Object> findAllMember(Pageable pageable
     ) {
         Page<MemberDto> all = memberService.findAll(pageable);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
@@ -104,12 +106,22 @@ public class AdminController {
     // 상점 추가
     @PostMapping(value = "/register/shop")
     public Response<Object> registerShop(
+            @RequestBody ShopRegisterDto shopRegisterDto
+            ) {
 
-    ) {
+        shopService.save(shopRegisterDto);
+
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
 
     }
 
+    //  상점 리스트
+    @GetMapping(value = "/shop/findAll")
+    public Response<Object> findAllShop(Pageable pageable
+    ) {
+        Page<ShopReadDto> all = shopService.findAll(pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
+    }
 
 
 
