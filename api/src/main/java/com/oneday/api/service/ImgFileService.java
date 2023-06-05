@@ -22,6 +22,8 @@ public class ImgFileService {
         return imgFileRepository.save(imgFile);
     }
 
+
+
     public ImgFile findByIdEquals(int id) {
         return imgFileRepository.findByIdEquals(id);
     }
