@@ -183,6 +183,18 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,  byShopIdEquals);
     }
 
+    // 주문 현황 리스트
+    @GetMapping(value = "/orders/findAll")
+    public Response<Object> findAllOrders(
+            @RequestParam(required = false) String startDt,
+            @RequestParam(required = false) String endDt,
+            @RequestParam(required = false) OrderStatus orderStatus,
+            Pageable pageable
+    ) {
+        Page<OrdersReadDto> all = ordersService.findAll(startDt,endDt,orderStatus,pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  all);
+    }
+
 
 
 
