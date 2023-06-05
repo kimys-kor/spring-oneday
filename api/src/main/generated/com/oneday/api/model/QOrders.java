@@ -32,8 +32,6 @@ public class QOrders extends EntityPathBase<Orders> {
 
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
-    public final NumberPath<Long> riderId = createNumber("riderId", Long.class);
-
     public final NumberPath<Integer> shipPrice = createNumber("shipPrice", Integer.class);
 
     public final NumberPath<Long> shopId = createNumber("shopId", Long.class);

@@ -32,4 +32,22 @@ public class ShopService {
     public Page<ShopReadDto> findAll(Pageable pageable) {
         return shopCustomRepository.findAll(pageable);
     }
+
+    public Shop update(Long shopId, ShopRegisterDto shopRegisterDto) {
+        Shop byId = findById(shopId);
+        byId.setEmail(shopRegisterDto.getEmail());
+        byId.setOwnerName(shopRegisterDto.getOwnerName());
+        byId.setPhoneNum(shopRegisterDto.getPhoneNum());
+        return shopRepository.save(byId);
+    }
+
+    public Shop findById(Long shopId) {
+        return shopRepository.findById(shopId).orElse(null);
+    }
+
+    public void delete(Long shopId) {
+        Shop byId = findById(shopId);
+        shopRepository.delete(byId);
+
+    }
 }

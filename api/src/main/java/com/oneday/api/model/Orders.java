@@ -1,10 +1,7 @@
 package com.oneday.api.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Orders extends BaseTime {
 
     @Id
@@ -28,9 +26,6 @@ public class Orders extends BaseTime {
     private Long shopId;
 
     private Long memberId;
-
-    private Long riderId;
-
 
     private String address;
 

@@ -2,11 +2,8 @@ package com.oneday.api.controller;
 
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
-import com.oneday.api.model.ImgFile;
-import com.oneday.api.model.Member;
-import com.oneday.api.model.dto.MemberDto;
-import com.oneday.api.model.dto.ShopReadDto;
-import com.oneday.api.model.dto.ShopRegisterDto;
+import com.oneday.api.model.*;
+import com.oneday.api.model.dto.*;
 import com.oneday.api.service.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -106,13 +104,22 @@ public class AdminController {
     // 상점 추가
     @PostMapping(value = "/register/shop")
     public Response<Object> registerShop(
-            @RequestBody ShopRegisterDto shopRegisterDto
+            ShopRegisterDto shopRegisterDto
             ) {
 
         shopService.save(shopRegisterDto);
 
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+    }
 
+    // 상점 업데이트
+    @PostMapping(value = "/shop/update")
+    public Response<Object> updateShop(
+            Long shopId,
+            ShopRegisterDto shopRegisterDto
+    ) {
+        shopService.update(shopId,shopRegisterDto);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 
     //  상점 리스트
@@ -121,6 +128,59 @@ public class AdminController {
     ) {
         Page<ShopReadDto> all = shopService.findAll(pageable);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
+    }
+
+    // 상점 상세
+    @GetMapping(value = "/shop/findOne")
+    public Response<Object> findOneShop(Long shopId
+    ) {
+        Shop byId = shopService.findById(shopId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,byId);
+    }
+
+    // 상점 삭제
+    @GetMapping(value = "/shop/delete")
+    public Response<Object> deleteShop(Long shopId
+    ) {
+        shopService.delete(shopId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+    }
+
+    // 상품 추가
+    @PostMapping(value = "/product/save")
+    public Response<Object> saveProduct(
+            ProductRegisterDto productRegisterDto
+    ) {
+        Product save = productService.save(productRegisterDto);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  save);
+    }
+
+    // 상품 업데이트
+    @PostMapping(value = "/product/update")
+    public Response<Object> updateProduct(
+            Long productId,
+            ProductRegisterDto productRegisterDto
+    ) {
+        Product update = productService.update(productId, productRegisterDto);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  update);
+    }
+
+    // 상품 상세
+    @GetMapping(value = "/product/findOne")
+    public Response<Object> findOneProduct(
+            Long productId
+    ) {
+        Product byId = productService.findById(productId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  byId);
+    }
+
+    // 상점별 상품 리스트
+    @GetMapping(value = "/product/findAll")
+    public Response<Object> findAllProduct(
+            Long shopId
+    ) {
+        List<Product> byShopIdEquals = productService.findByShopIdEquals(shopId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  byShopIdEquals);
     }
 
 
