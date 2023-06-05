@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -18,8 +17,6 @@ public class QProduct extends EntityPathBase<Product> {
 
     private static final long serialVersionUID = -1660620405L;
 
-    private static final PathInits INITS = PathInits.DIRECT2;
-
     public static final QProduct product = new QProduct("product");
 
     public final QBaseTime _super = new QBaseTime(this);
@@ -29,13 +26,11 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ListPath<OrdersProduct, QOrdersProduct> ordersProducts = this.<OrdersProduct, QOrdersProduct>createList("ordersProducts", OrdersProduct.class, QOrdersProduct.class, PathInits.DIRECT2);
-
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
     public final EnumPath<ProductCategory> productCategory = createEnum("productCategory", ProductCategory.class);
 
-    public final QShop shop;
+    public final NumberPath<Long> shopId = createNumber("shopId", Long.class);
 
     public final NumberPath<Integer> stock = createNumber("stock", Integer.class);
 
@@ -43,24 +38,15 @@ public class QProduct extends EntityPathBase<Product> {
     public final DateTimePath<java.time.LocalDateTime> updatedDt = _super.updatedDt;
 
     public QProduct(String variable) {
-        this(Product.class, forVariable(variable), INITS);
+        super(Product.class, forVariable(variable));
     }
 
     public QProduct(Path<? extends Product> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QProduct(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QProduct(PathMetadata metadata, PathInits inits) {
-        this(Product.class, metadata, inits);
-    }
-
-    public QProduct(Class<? extends Product> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.shop = inits.isInitialized("shop") ? new QShop(forProperty("shop")) : null;
+        super(Product.class, metadata);
     }
 
 }
