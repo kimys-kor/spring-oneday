@@ -10,13 +10,9 @@ public class OrdersProduct {
     @Column(name = "ORDERS_PRODUCT_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ORDERS_ID")
-    private Orders orders;
+    private Long ordersId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRODUCT_ID")
-    private Product product;
+    private Long productId;
 
 
 }

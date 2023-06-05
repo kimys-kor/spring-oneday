@@ -19,10 +19,5 @@ public class Shop {
 
     private String email;
 
-    @OneToMany(mappedBy = "shop")
-    private List<Product> product = new ArrayList<>();
-
-    @OneToMany(mappedBy = "shop")
-    private List<Orders> orders = new ArrayList<>();
 
 }

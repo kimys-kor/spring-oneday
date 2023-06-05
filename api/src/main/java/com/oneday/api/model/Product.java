@@ -21,14 +21,11 @@ public class Product extends BaseTime {
     @Column(name = "PRODUCT_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Shop shop;
+    private Long shopId;
 
     @Enumerated(EnumType.STRING)
     private ProductCategory productCategory;
 
-    @OneToMany(mappedBy = "product")
-    private List<OrdersProduct> ordersProducts = new ArrayList<>();
 
     private int price;
 

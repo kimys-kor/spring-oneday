@@ -15,9 +15,7 @@ public class PointHistory extends BaseTime {
     @Column(name = "POINTHISTORY_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RIDER_ID")
-    private Rider rider;
+    private Long riderId;
 
     private Integer point;
 

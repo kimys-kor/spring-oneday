@@ -25,20 +25,11 @@ public class Orders extends BaseTime {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SHOP_ID")
-    private Shop shop;
+    private Long shopId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    private Long memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RIDER_ID")
-    private Rider rider;
-
-    @OneToMany(mappedBy = "orders")
-    private List<OrdersProduct> ordersProducts = new ArrayList<>();
+    private Long riderId;
 
 
     private String address;

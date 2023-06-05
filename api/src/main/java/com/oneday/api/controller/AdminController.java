@@ -101,6 +101,16 @@ public class AdminController {
     }
 
 
+    // 상점 추가
+    @PostMapping(value = "/register/shop")
+    public Response<Object> registerShop(
+
+    ) {
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+
+    }
+
+
 
 
 

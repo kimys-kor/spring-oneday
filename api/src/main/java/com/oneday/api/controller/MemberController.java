@@ -4,14 +4,9 @@ package com.oneday.api.controller;
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
 
-import com.oneday.api.model.Member;
 import com.oneday.api.model.dto.MemberDto;
 import com.oneday.api.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 

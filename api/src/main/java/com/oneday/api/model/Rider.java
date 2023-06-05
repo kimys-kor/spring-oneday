@@ -24,7 +24,4 @@ public class Rider extends BaseTime {
     private int point;
 
 
-    // 다른 필드와 메서드들
-    @OneToMany(mappedBy = "rider")
-    private List<Orders> orders = new ArrayList<>();
 }

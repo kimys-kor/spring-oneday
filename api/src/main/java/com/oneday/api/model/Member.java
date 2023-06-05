@@ -42,8 +42,6 @@ public class Member extends BaseTime {
     private String provider;  // google
     private String providerId; // googleId(primaryKey)
 
-    @OneToMany(mappedBy = "member")
-    private List<Orders> orders = new ArrayList<>();
 
 
     public Member(String email, String password, String nickname, String phoneNum) {
