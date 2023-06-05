@@ -28,6 +28,12 @@ public class QShop extends EntityPathBase<Shop> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final NumberPath<java.math.BigDecimal> lat = createNumber("lat", java.math.BigDecimal.class);
+
+    public final NumberPath<java.math.BigDecimal> lon = createNumber("lon", java.math.BigDecimal.class);
+
+    public final StringPath name = createString("name");
+
     public final StringPath ownerName = createString("ownerName");
 
     public final StringPath phoneNum = createString("phoneNum");
