@@ -30,9 +30,11 @@ public class QRider extends EntityPathBase<Rider> {
 
     public final StringPath phone = createString("phone");
 
-    public final NumberPath<Integer> point = createNumber("point", Integer.class);
+    public final NumberPath<Double> point = createNumber("point", Double.class);
 
     public final StringPath riderName = createString("riderName");
+
+    public final EnumPath<MemberStatus> status = createEnum("status", MemberStatus.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDt = _super.updatedDt;

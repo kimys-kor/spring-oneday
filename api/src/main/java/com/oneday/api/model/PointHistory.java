@@ -15,8 +15,15 @@ public class PointHistory extends BaseTime {
     @Column(name = "POINTHISTORY_ID")
     private Long id;
 
+    private Long ordersId;
+
     private Long riderId;
 
-    private Integer point;
+    private Double point;
 
+    public PointHistory(Long ordersId, Long riderId, Double point) {
+        this.ordersId = ordersId;
+        this.riderId = riderId;
+        this.point = point;
+    }
 }

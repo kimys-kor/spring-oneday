@@ -17,7 +17,6 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin")
@@ -46,6 +45,9 @@ public class AdminController {
 
     @Autowired
     OrdersService ordersService;
+
+    @Autowired
+    OrdersAssignService ordersAssignService;
 
 
     @GetMapping(value = "/test")
@@ -195,7 +197,76 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,  all);
     }
 
+    // 라이더 등록
+    @PostMapping(value = "/riders/save")
+    public Response<Object> ridersSave(
+            RiderRegisterDto dto
+    ) {
+        Rider save = riderService.save(dto);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  save);
+    }
 
+    // 라이더 수정
+    @PostMapping(value = "/riders/update")
+    public Response<Object> ridersSave(
+            Long riderId,
+            RiderRegisterDto dto
+    ) {
+        Rider updateRider = riderService.update(riderId,dto);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  updateRider);
+    }
+
+    // 라이더 리스트
+    @GetMapping(value = "/rider/findAll")
+    public Response<Object> findAllRider(
+            Pageable pageable
+    ) {
+        Page<RiderReadDto> all = riderService.findAll(pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  all);
+    }
+
+    // 라이더 상세정보
+    @GetMapping(value = "/rider/findOne")
+    public Response<Object> findAllRider(
+            Long riderId
+    ) {
+        Rider byId = riderService.findById(riderId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  byId);
+    }
+
+    // 라이더 삭제
+    @GetMapping(value = "/rider/delete")
+    public Response<Object> deleteRider(
+            Long riderId
+    ) {
+        riderService.delete(riderId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+    }
+
+    // 라이더 주문 배정
+    @GetMapping(value = "/rider/ordersAssign")
+    public Response<Object> ordersAssign(
+            Long riderId,
+            Long ordersId
+    ) {
+        OrdersAssign ordersAssign = OrdersAssign.builder()
+                .ordersId(ordersId)
+                .riderId(riderId)
+                .build();
+
+        ordersAssignService.save(ordersAssign);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+    }
+
+    // 라이더 배달 완료
+    @GetMapping(value = "/rider/orderComplete")
+    public Response<Object> orderComplete(
+            Long riderId,
+            Long ordersId
+    ) {
+        riderService.ordersComplete(ordersId,riderId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+    }
 
 
 }

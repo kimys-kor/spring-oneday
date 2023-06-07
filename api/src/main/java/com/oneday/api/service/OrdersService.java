@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 public class OrdersService {
+    
     @Autowired
     OrdersRepository ordersRepository;
 
@@ -35,7 +36,15 @@ public class OrdersService {
         return ordersRepository.save(orders);
     }
 
+    public Orders saveOrders(Orders orders) {
+        return ordersRepository.save(orders);
+    }
+
     public Page<OrdersReadDto> findAll(String startDt, String endDt, OrderStatus orderStatus, Pageable pageable) {
         return ordersCustomRepository.findAll(startDt,endDt,orderStatus,pageable);
+    }
+
+    public Orders findById(Long ordersId) {
+        return ordersRepository.findById(ordersId).orElse(null);
     }
 }
