@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class MemberAddressDto {
+public class UserAddressDto {
 
     private String zonecode;
     // 기본 주소

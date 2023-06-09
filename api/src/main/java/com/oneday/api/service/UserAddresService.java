@@ -1,7 +1,7 @@
 package com.oneday.api.service;
 
 import com.oneday.api.model.UserAddress;
-import com.oneday.api.model.dto.MemberAddressDto;
+import com.oneday.api.model.dto.UserAddressDto;
 import com.oneday.api.repository.UserAddresRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class UserAddresService {
         return userAddressRepository.save(userAddress);
     }
 
-    public UserAddress update(Long userId, MemberAddressDto dto) {
+    public UserAddress update(Long userId, UserAddressDto dto) {
         UserAddress userAddress = findById(userId);
         userAddress.setZonecode(dto.getZonecode());
         userAddress.setAddress(dto.getAddress());

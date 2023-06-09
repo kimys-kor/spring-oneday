@@ -1,7 +1,7 @@
 package com.oneday.api.service;
 
 import com.oneday.api.model.User;
-import com.oneday.api.model.dto.MemberDto;
+import com.oneday.api.model.dto.UserDto;
 import com.oneday.api.repository.MemberCustomRepository;
 import com.oneday.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,14 +33,14 @@ public class UserService {
         return byId;
     }
 
-    public void join(MemberDto memberDto) {
-        String encPassword = bCryptPasswordEncoder.encode(memberDto.getPassword());
-        memberDto.setPassword(encPassword);
-        User user = new User(memberDto.getEmail(), memberDto.getPassword(), memberDto.getNickname(), memberDto.getPhoneNum());
+    public void join(UserDto userDto) {
+        String encPassword = bCryptPasswordEncoder.encode(userDto.getPassword());
+        userDto.setPassword(encPassword);
+        User user = new User(userDto.getEmail(), userDto.getPassword(), userDto.getNickname(), userDto.getPhoneNum());
         userRepository.save(user);
     }
 
-    public Page<MemberDto> findAll(Pageable pageable) {
+    public Page<UserDto> findAll(Pageable pageable) {
         return memberCustomRepository.findAll(pageable);
     }
 

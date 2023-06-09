@@ -76,8 +76,6 @@ public class AdminController {
             System.out.println(e);
         }
 
-
-
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,"upload Success");
     }
 
@@ -94,7 +92,7 @@ public class AdminController {
     @GetMapping(value = "/member/findAll")
     public Response<Object> findAllMember(Pageable pageable
     ) {
-        Page<MemberDto> all = userService.findAll(pageable);
+        Page<UserDto> all = userService.findAll(pageable);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
     }
 

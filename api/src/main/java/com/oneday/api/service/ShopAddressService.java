@@ -1,8 +1,6 @@
 package com.oneday.api.service;
 
 import com.oneday.api.model.ShopAddress;
-import com.oneday.api.model.UserAddress;
-import com.oneday.api.model.dto.MemberAddressDto;
 import com.oneday.api.model.dto.ShopAddressDto;
 import com.oneday.api.repository.ShopAddressRepository;
 import lombok.RequiredArgsConstructor;

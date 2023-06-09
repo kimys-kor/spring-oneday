@@ -4,7 +4,7 @@ package com.oneday.api.controller;
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
 
-import com.oneday.api.model.dto.MemberDto;
+import com.oneday.api.model.dto.UserDto;
 import com.oneday.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +19,9 @@ public class MemberController {
 
     @PostMapping(value = "/join")
     public Response<Object> join(
-            MemberDto memberDto
+            UserDto userDto
     ) {
-        userService.join(memberDto);
+        userService.join(userDto);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 

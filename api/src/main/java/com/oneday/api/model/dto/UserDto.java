@@ -3,7 +3,7 @@ package com.oneday.api.model.dto;
 import lombok.Data;
 
 @Data
-public class MemberDto {
+public class UserDto {
 
     private String email;
     private String password;

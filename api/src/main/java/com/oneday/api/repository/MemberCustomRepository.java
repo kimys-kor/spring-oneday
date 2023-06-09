@@ -1,7 +1,7 @@
 package com.oneday.api.repository;
 
 import com.oneday.api.model.QUser;
-import com.oneday.api.model.dto.MemberDto;
+import com.oneday.api.model.dto.UserDto;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,14 +21,14 @@ public class MemberCustomRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public Page<MemberDto> findAll(Pageable pageable) {
+    public Page<UserDto> findAll(Pageable pageable) {
 
         QUser user = QUser.user;
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
 
-        QueryResults<MemberDto> results = queryFactory.select(Projections.fields(MemberDto.class,
+        QueryResults<UserDto> results = queryFactory.select(Projections.fields(UserDto.class,
                         user.id,
                         user.email,
                         user.nickname,
@@ -42,7 +42,7 @@ public class MemberCustomRepository {
                 .fetchResults();
 
 
-        List<MemberDto> data = results.getResults();
+        List<UserDto> data = results.getResults();
 
 
         long total = results.getTotal();
