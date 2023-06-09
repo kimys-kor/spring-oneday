@@ -15,14 +15,12 @@ import org.springframework.stereotype.Service;
 @Transactional
 @RequiredArgsConstructor
 public class ImgFileService {
-    @Autowired
-    ImgFileRepository imgFileRepository;
+
+    private final ImgFileRepository imgFileRepository;
 
     public ImgFile save(ImgFile imgFile) {
         return imgFileRepository.save(imgFile);
     }
-
-
 
     public ImgFile findByIdEquals(int id) {
         return imgFileRepository.findByIdEquals(id);

@@ -25,13 +25,9 @@ public class QShopAddress extends EntityPathBase<ShopAddress> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath jibunAddress = createString("jibunAddress");
-
     public final NumberPath<java.math.BigDecimal> lat = createNumber("lat", java.math.BigDecimal.class);
 
     public final NumberPath<java.math.BigDecimal> lon = createNumber("lon", java.math.BigDecimal.class);
-
-    public final StringPath roadAddress = createString("roadAddress");
 
     public final NumberPath<Long> shopId = createNumber("shopId", Long.class);
 

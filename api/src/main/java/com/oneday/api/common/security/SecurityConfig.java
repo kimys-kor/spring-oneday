@@ -2,8 +2,7 @@ package com.oneday.api.common.security;
 
 import com.oneday.api.common.jwt.JwtAuthenticationFilter;
 import com.oneday.api.common.jwt.JwtAuthorizationFilter;
-import com.oneday.api.repository.MemberRepository;
-import jakarta.servlet.DispatcherType;
+import com.oneday.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Autowired
-    private MemberRepository memberRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private CorsConfig corsConfig;
@@ -36,8 +35,8 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .apply(new MyCustomDsl()) // 커스텀 필터 등록
                 .and()
-                .authorizeRequests(authroize -> authroize.requestMatchers("/member/view/**")
-                        .access("hasRole('ROLE_MEMBER') or hasRole('ROLE_ADMIN')")
+                .authorizeRequests(authroize -> authroize.requestMatchers("/user/view/**")
+                        .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                         .requestMatchers("/admin/**")
                         .access("hasRole('ROLE_ADMIN')")
                         .anyRequest().permitAll())
@@ -51,7 +50,7 @@ public class SecurityConfig {
             http
                     .addFilter(corsConfig.corsFilter())
                     .addFilter(new JwtAuthenticationFilter(authenticationManager))
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository));
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository));
         }
     }
 

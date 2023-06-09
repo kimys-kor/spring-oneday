@@ -2,14 +2,15 @@ package com.oneday.api.service;
 
 import com.oneday.api.model.OrdersAssign;
 import com.oneday.api.repository.OrdersAssignRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class OrdersAssignService {
 
-    @Autowired
-    OrdersAssignRepository ordersAssignRepository;
+
+    private final OrdersAssignRepository ordersAssignRepository;
 
     public OrdersAssign save(OrdersAssign ordersAssign) {
         return ordersAssignRepository.save(ordersAssign);

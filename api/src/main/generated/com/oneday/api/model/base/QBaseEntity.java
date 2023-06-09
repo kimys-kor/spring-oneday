@@ -1,4 +1,4 @@
-package com.oneday.api.model;
+package com.oneday.api.model.base;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultSupertypeSerializer")
 public class QBaseEntity extends EntityPathBase<BaseEntity> {
 
-    private static final long serialVersionUID = -791151624L;
+    private static final long serialVersionUID = -1792868819L;
 
     public static final QBaseEntity baseEntity = new QBaseEntity("baseEntity");
 

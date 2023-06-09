@@ -1,19 +1,16 @@
 package com.oneday.api.model;
 
+import com.oneday.api.model.base.BaseTime;
+import com.oneday.api.model.base.UserStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Setter
 public class Rider extends BaseTime {
 
     @Id
@@ -28,7 +25,7 @@ public class Rider extends BaseTime {
     private double point;
 
     @Enumerated(EnumType.STRING)
-    private MemberStatus status;
+    private UserStatus status;
 
 
 }

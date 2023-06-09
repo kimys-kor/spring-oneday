@@ -1,6 +1,6 @@
 package com.oneday.api.model.dto;
 
-import com.oneday.api.model.OrderStatus;
+import com.oneday.api.model.base.OrderStatus;
 import lombok.Data;
 
 @Data

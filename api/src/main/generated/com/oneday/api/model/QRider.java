@@ -19,7 +19,7 @@ public class QRider extends EntityPathBase<Rider> {
 
     public static final QRider rider = new QRider("rider");
 
-    public final QBaseTime _super = new QBaseTime(this);
+    public final com.oneday.api.model.base.QBaseTime _super = new com.oneday.api.model.base.QBaseTime(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDt = _super.createdDt;
@@ -34,7 +34,7 @@ public class QRider extends EntityPathBase<Rider> {
 
     public final StringPath riderName = createString("riderName");
 
-    public final EnumPath<MemberStatus> status = createEnum("status", MemberStatus.class);
+    public final EnumPath<com.oneday.api.model.base.UserStatus> status = createEnum("status", com.oneday.api.model.base.UserStatus.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDt = _super.updatedDt;

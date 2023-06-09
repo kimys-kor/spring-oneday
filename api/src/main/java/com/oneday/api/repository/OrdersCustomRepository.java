@@ -1,6 +1,6 @@
 package com.oneday.api.repository;
 
-import com.oneday.api.model.OrderStatus;
+import com.oneday.api.model.base.OrderStatus;
 import com.oneday.api.model.dto.OrdersReadDto;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
@@ -18,7 +18,6 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.oneday.api.model.QOrders.orders;
@@ -37,11 +36,10 @@ public class OrdersCustomRepository {
 
 
         QueryResults<OrdersReadDto> results = queryFactory.select(Projections.fields(OrdersReadDto.class,
-                        orders.status,
+                        orders.orderStatus,
                         orders.shopId,
-                        orders.memberId,
-                        orders.address,
-                        orders.zipcode,
+                        orders.userId,
+                        orders.userAddresId,
                         orders.price,
                         orders.shipPrice
                 ))
@@ -81,7 +79,7 @@ public class OrdersCustomRepository {
         if (StringUtils.isEmpty(orderStatus)) {
             return null;
         }
-        return orders.status.eq(orderStatus);
+        return orders.orderStatus.eq(orderStatus);
     }
 
 

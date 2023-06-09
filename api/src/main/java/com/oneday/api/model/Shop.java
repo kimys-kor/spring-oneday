@@ -1,11 +1,10 @@
 package com.oneday.api.model;
 
+import com.oneday.api.model.base.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Builder
@@ -24,18 +23,44 @@ public class Shop extends BaseTime {
 
     private String ownerName;
 
-    private String phoneNum;
+    // 사업자번호
+    private String businessNumber;
 
-    private String email;
+    // 연락처
+    private String contactNumber;
+
+    // 주소
+    private String shopAddress;
+    // 매장소개
+    private String shopDescription;
+
+    // 운영시간
+    private String time;
 
     private BigDecimal lat;
+    private BigDecimal lon;
 
-    private  BigDecimal lon;
+    private String profile1;
+    private String profile2;
+    private String profile3;
 
-    private String si;
-    private String gu;
-    private String dong;
+    private int reviewNum;
 
-    private String restAddress;
-
+    public Shop(String name, String ownerName, String businessNumber, String contactNumber,
+                String shopAddress, String time, String shopDescription, BigDecimal lat, BigDecimal lon,
+                String profile1, String profile2, String profile3) {
+        this.name = name;
+        this.ownerName = ownerName;
+        this.businessNumber = businessNumber;
+        this.contactNumber = contactNumber;
+        this.shopAddress = shopAddress;
+        this.time = time;
+        this.shopDescription = shopDescription;
+        this.lat = lat;
+        this.lon = lon;
+        this.profile1 = profile1;
+        this.profile2 = profile2;
+        this.profile3 = profile3;
+        this.reviewNum = 0;
+    }
 }

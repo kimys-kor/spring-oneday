@@ -19,16 +19,14 @@ public class QShop extends EntityPathBase<Shop> {
 
     public static final QShop shop = new QShop("shop");
 
-    public final QBaseTime _super = new QBaseTime(this);
+    public final com.oneday.api.model.base.QBaseTime _super = new com.oneday.api.model.base.QBaseTime(this);
+
+    public final StringPath businessNumber = createString("businessNumber");
+
+    public final StringPath contactNumber = createString("contactNumber");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDt = _super.createdDt;
-
-    public final StringPath dong = createString("dong");
-
-    public final StringPath email = createString("email");
-
-    public final StringPath gu = createString("gu");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -40,11 +38,19 @@ public class QShop extends EntityPathBase<Shop> {
 
     public final StringPath ownerName = createString("ownerName");
 
-    public final StringPath phoneNum = createString("phoneNum");
+    public final StringPath profile1 = createString("profile1");
 
-    public final StringPath restAddress = createString("restAddress");
+    public final StringPath profile2 = createString("profile2");
 
-    public final StringPath si = createString("si");
+    public final StringPath profile3 = createString("profile3");
+
+    public final NumberPath<Integer> reviewNum = createNumber("reviewNum", Integer.class);
+
+    public final StringPath shopAddress = createString("shopAddress");
+
+    public final StringPath shopDescription = createString("shopDescription");
+
+    public final StringPath time = createString("time");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDt = _super.updatedDt;

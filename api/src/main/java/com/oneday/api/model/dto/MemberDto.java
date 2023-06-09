@@ -1,6 +1,5 @@
 package com.oneday.api.model.dto;
 
-import com.oneday.api.model.MemberRole;
 import lombok.Data;
 
 @Data

@@ -1,20 +1,19 @@
 package com.oneday.api.model;
 
+import com.oneday.api.model.base.BaseTime;
+import com.oneday.api.model.base.UserRole;
+import com.oneday.api.model.base.UserStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class Member extends BaseTime {
+@Setter
+@Builder
+public class User extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,10 +32,10 @@ public class Member extends BaseTime {
     private int point;
 
     @Enumerated(EnumType.STRING)
-    private MemberStatus status;
+    private UserStatus status;
 
     @Enumerated(EnumType.STRING)
-    private MemberRole role;
+    private UserRole role;
 
     // oauth를 통해 가입한 회원
     private String provider;  // google
@@ -44,12 +43,12 @@ public class Member extends BaseTime {
 
 
 
-    public Member(String email, String password, String nickname, String phoneNum) {
+    public User(String email, String password, String nickname, String phoneNum) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.phoneNum = phoneNum;
-        this.role = MemberRole.ROLE_MEMBER;
-        this.status = MemberStatus.NORMAL;
+        this.role = UserRole.ROLE_USER;
+        this.status = UserStatus.NORMAL;
     }
 }

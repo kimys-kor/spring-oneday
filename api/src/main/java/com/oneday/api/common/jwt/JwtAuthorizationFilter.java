@@ -4,8 +4,8 @@ package com.oneday.api.common.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.oneday.api.common.security.PrincipalDetails;
-import com.oneday.api.model.Member;
-import com.oneday.api.repository.MemberRepository;
+import com.oneday.api.model.User;
+import com.oneday.api.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,22 +14,19 @@ import org.springframework.security.authentication.AuthenticationManager;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Optional;
 
 // 인가
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private MemberRepository memberRepository;
+    private UserRepository userRepository;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
-        this.memberRepository = memberRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -52,7 +49,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         if (username != null) {
 
-            Member byEmail = memberRepository.findByEmail(username).orElseThrow();
+            User byEmail = userRepository.findByEmail(username).orElseThrow();
 
 
             // 인증은 토큰 검증시 끝. 인증을 하기 위해서가 아닌 스프링 시큐리티가 수행해주는 권한 처리를 위해

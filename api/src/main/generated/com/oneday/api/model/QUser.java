@@ -10,16 +10,16 @@ import com.querydsl.core.types.Path;
 
 
 /**
- * QMember is a Querydsl query type for Member
+ * QUser is a Querydsl query type for User
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QMember extends EntityPathBase<Member> {
+public class QUser extends EntityPathBase<User> {
 
-    private static final long serialVersionUID = 818307710L;
+    private static final long serialVersionUID = -1219007313L;
 
-    public static final QMember member = new QMember("member1");
+    public static final QUser user = new QUser("user");
 
-    public final QBaseTime _super = new QBaseTime(this);
+    public final com.oneday.api.model.base.QBaseTime _super = new com.oneday.api.model.base.QBaseTime(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDt = _super.createdDt;
@@ -40,23 +40,23 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath providerId = createString("providerId");
 
-    public final EnumPath<MemberRole> role = createEnum("role", MemberRole.class);
+    public final EnumPath<com.oneday.api.model.base.UserRole> role = createEnum("role", com.oneday.api.model.base.UserRole.class);
 
-    public final EnumPath<MemberStatus> status = createEnum("status", MemberStatus.class);
+    public final EnumPath<com.oneday.api.model.base.UserStatus> status = createEnum("status", com.oneday.api.model.base.UserStatus.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDt = _super.updatedDt;
 
-    public QMember(String variable) {
-        super(Member.class, forVariable(variable));
+    public QUser(String variable) {
+        super(User.class, forVariable(variable));
     }
 
-    public QMember(Path<? extends Member> path) {
+    public QUser(Path<? extends User> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QMember(PathMetadata metadata) {
-        super(Member.class, metadata);
+    public QUser(PathMetadata metadata) {
+        super(User.class, metadata);
     }
 
 }

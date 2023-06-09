@@ -1,13 +1,15 @@
 package com.oneday.api.model;
 
+import com.oneday.api.model.base.BaseTime;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "POINTHISTORY")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PointHistory extends BaseTime {
 
     @Id

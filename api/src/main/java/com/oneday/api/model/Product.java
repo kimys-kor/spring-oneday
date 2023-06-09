@@ -1,10 +1,9 @@
 package com.oneday.api.model;
 
+import com.oneday.api.model.base.BaseTime;
+import com.oneday.api.model.base.ProductCategory;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor

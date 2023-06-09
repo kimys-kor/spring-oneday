@@ -19,29 +19,31 @@ public class QOrders extends EntityPathBase<Orders> {
 
     public static final QOrders orders = new QOrders("orders");
 
-    public final QBaseTime _super = new QBaseTime(this);
-
-    public final StringPath address = createString("address");
+    public final com.oneday.api.model.base.QBaseTime _super = new com.oneday.api.model.base.QBaseTime(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDt = _super.createdDt;
 
+    public final NumberPath<Integer> discountPrice = createNumber("discountPrice", Integer.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Long> memberId = createNumber("memberId", Long.class);
+    public final EnumPath<com.oneday.api.model.base.OrderStatus> orderStatus = createEnum("orderStatus", com.oneday.api.model.base.OrderStatus.class);
 
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
     public final NumberPath<Integer> shipPrice = createNumber("shipPrice", Integer.class);
 
-    public final NumberPath<Long> shopId = createNumber("shopId", Long.class);
+    public final NumberPath<Long> shopCouponId = createNumber("shopCouponId", Long.class);
 
-    public final EnumPath<OrderStatus> status = createEnum("status", OrderStatus.class);
+    public final NumberPath<Long> shopId = createNumber("shopId", Long.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDt = _super.updatedDt;
 
-    public final StringPath zipcode = createString("zipcode");
+    public final NumberPath<Long> userAddresId = createNumber("userAddresId", Long.class);
+
+    public final NumberPath<Long> userId = createNumber("userId", Long.class);
 
     public QOrders(String variable) {
         super(Orders.class, forVariable(variable));

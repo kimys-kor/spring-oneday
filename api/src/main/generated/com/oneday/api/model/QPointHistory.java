@@ -19,7 +19,7 @@ public class QPointHistory extends EntityPathBase<PointHistory> {
 
     public static final QPointHistory pointHistory = new QPointHistory("pointHistory");
 
-    public final QBaseTime _super = new QBaseTime(this);
+    public final com.oneday.api.model.base.QBaseTime _super = new com.oneday.api.model.base.QBaseTime(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDt = _super.createdDt;

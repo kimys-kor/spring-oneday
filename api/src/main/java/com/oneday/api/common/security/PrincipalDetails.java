@@ -1,6 +1,6 @@
 package com.oneday.api.common.security;
 
-import com.oneday.api.model.Member;
+import com.oneday.api.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,25 +12,25 @@ import java.util.Collection;
 // Security Session => Authentication => userDetails
 public class PrincipalDetails implements UserDetails {
 
-    private Member member;
+    private User user;
 
-    public PrincipalDetails(Member member) {
-        this.member = member;
+    public PrincipalDetails(User user) {
+        this.user = user;
     }
 
-    public Member getUser() {
-        return member;
+    public User getUser() {
+        return user;
     }
 
 
     @Override
     public String getPassword() {
-        return member.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return member.getEmail();
+        return user.getEmail();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class PrincipalDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(member.getRole().name()));
+        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
         return authorities;
     }
 

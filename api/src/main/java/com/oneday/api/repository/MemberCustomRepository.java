@@ -1,10 +1,9 @@
 package com.oneday.api.repository;
 
-import com.oneday.api.model.QMember;
+import com.oneday.api.model.QUser;
 import com.oneday.api.model.dto.MemberDto;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,20 +23,20 @@ public class MemberCustomRepository {
 
     public Page<MemberDto> findAll(Pageable pageable) {
 
-        QMember member = QMember.member;
+        QUser user = QUser.user;
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
 
         QueryResults<MemberDto> results = queryFactory.select(Projections.fields(MemberDto.class,
-                        member.id,
-                        member.email,
-                        member.nickname,
-                        member.phoneNum,
-                        member.createdDt,
-                        member.status
+                        user.id,
+                        user.email,
+                        user.nickname,
+                        user.phoneNum,
+                        user.createdDt,
+                        user.status
                 ))
-                .from(member)
+                .from(user)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();

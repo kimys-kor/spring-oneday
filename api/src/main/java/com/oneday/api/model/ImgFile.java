@@ -16,11 +16,11 @@ public class ImgFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, columnDefinition = "varchar(300)")
+    @Column(nullable = false, columnDefinition = "varchar(250)")
     private String origFileName;
-    @Column(nullable = false, columnDefinition = "varchar(300)")
+    @Column(nullable = false, columnDefinition = "varchar(250)")
     private String fileName;
-    @Column(nullable = false, columnDefinition = "varchar(300)")
+    @Column(nullable = false, columnDefinition = "varchar(250)")
     private String filePath;
 }
 

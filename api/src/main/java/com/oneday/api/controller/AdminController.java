@@ -3,10 +3,11 @@ package com.oneday.api.controller;
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
 import com.oneday.api.model.*;
+import com.oneday.api.model.base.OrderStatus;
 import com.oneday.api.model.dto.*;
 import com.oneday.api.service.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,9 +18,11 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
+@RequiredArgsConstructor
 public class AdminController {
 
     @Value("${key.imgPath}")
@@ -28,26 +31,19 @@ public class AdminController {
     @Value("${key.imgUrl}")
     private String imgUrl;
 
-    @Autowired
-    ImgFileService imgFileService;
+    private final ImgFileService imgFileService;
 
-    @Autowired
-    MemberService memberService;
+    private final UserService userService;
 
-    @Autowired
-    ShopService shopService;
+    private final ShopService shopService;
 
-    @Autowired
-    ProductService productService;
+    private final ProductService productService;
 
-    @Autowired
-    RiderService riderService;
+    private final RiderService riderService;
 
-    @Autowired
-    OrdersService ordersService;
+    private final OrdersService ordersService;
 
-    @Autowired
-    OrdersAssignService ordersAssignService;
+    private final OrdersAssignService ordersAssignService;
 
 
     @GetMapping(value = "/test")
@@ -90,7 +86,7 @@ public class AdminController {
     public Response<Object> findOne(
             @RequestParam Long memberId
     ) {
-        Member byId = memberService.findById(memberId).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다 ㅠ"));
+        User byId = userService.findById(memberId).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다 ㅠ"));
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,byId);
     }
 
@@ -98,7 +94,7 @@ public class AdminController {
     @GetMapping(value = "/member/findAll")
     public Response<Object> findAllMember(Pageable pageable
     ) {
-        Page<MemberDto> all = memberService.findAll(pageable);
+        Page<MemberDto> all = userService.findAll(pageable);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
     }
 
@@ -128,8 +124,8 @@ public class AdminController {
     @GetMapping(value = "/shop/findAll")
     public Response<Object> findAllShop(Pageable pageable
     ) {
-        Page<ShopReadDto> all = shopService.findAll(pageable);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
+//        Page<ShopReadDto> all = shopService.findAll(pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 
     // 상점 상세
@@ -181,8 +177,8 @@ public class AdminController {
     public Response<Object> findAllProduct(
             Long shopId
     ) {
-        List<Product> byShopIdEquals = productService.findByShopIdEquals(shopId);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  byShopIdEquals);
+        List<Map<String, Object>> allByShopIdEquals = productService.findAllByShopIdEquals(shopId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  allByShopIdEquals);
     }
 
     // 주문 현황 리스트

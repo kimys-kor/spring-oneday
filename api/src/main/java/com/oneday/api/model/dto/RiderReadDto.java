@@ -1,6 +1,6 @@
 package com.oneday.api.model.dto;
 
-import com.oneday.api.model.MemberStatus;
+import com.oneday.api.model.base.UserStatus;
 import lombok.Data;
 
 @Data
@@ -14,5 +14,5 @@ public class RiderReadDto {
 
     private double point;
 
-    private MemberStatus status;
+    private UserStatus status;
 }

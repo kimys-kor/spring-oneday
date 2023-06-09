@@ -1,10 +1,9 @@
 package com.oneday.api.model;
 
+import com.oneday.api.model.base.BaseTime;
+import com.oneday.api.model.base.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "ORDERS")
@@ -20,22 +19,30 @@ public class Orders extends BaseTime {
     @Column(name = "ORDERS_ID")
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
-
     private Long shopId;
+    private Long userId;
 
-    private Long memberId;
+    private Long userAddresId;
 
-    private String address;
+    private int price;
+    // 배송비
+    private int shipPrice;
+    // 할인금액
+    private int discountPrice;
 
-    private String zipcode;
+    private Long shopCouponId;
 
-    private Integer price;
-    private Integer shipPrice;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
-
-
-
-
+    public Orders(Long shopId, Long userId, Long userAddresId, int price, int shipPrice, int discountPrice, Long shopCouponId, OrderStatus orderStatus) {
+        this.shopId = shopId;
+        this.userId = userId;
+        this.userAddresId = userAddresId;
+        this.price = price;
+        this.shipPrice = shipPrice;
+        this.discountPrice = discountPrice;
+        this.shopCouponId = shopCouponId;
+        this.orderStatus = orderStatus;
+    }
 }

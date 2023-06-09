@@ -19,7 +19,7 @@ public class QProduct extends EntityPathBase<Product> {
 
     public static final QProduct product = new QProduct("product");
 
-    public final QBaseTime _super = new QBaseTime(this);
+    public final com.oneday.api.model.base.QBaseTime _super = new com.oneday.api.model.base.QBaseTime(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDt = _super.createdDt;
@@ -28,7 +28,7 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
-    public final EnumPath<ProductCategory> productCategory = createEnum("productCategory", ProductCategory.class);
+    public final EnumPath<com.oneday.api.model.base.ProductCategory> productCategory = createEnum("productCategory", com.oneday.api.model.base.ProductCategory.class);
 
     public final NumberPath<Long> shopId = createNumber("shopId", Long.class);
 

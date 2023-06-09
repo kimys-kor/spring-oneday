@@ -1,4 +1,4 @@
-package com.oneday.api.model;
+package com.oneday.api.model.base;
 
 import lombok.Getter;
 import lombok.Setter;

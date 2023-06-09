@@ -1,22 +1,21 @@
 package com.oneday.api.service;
 
 import com.oneday.api.model.Product;
+import com.oneday.api.model.base.ProductCategory;
 import com.oneday.api.model.dto.ProductRegisterDto;
 import com.oneday.api.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
-    @Autowired
-    ProductRepository productRepository;
-
-    public Product findById(Long productId) {
-        return productRepository.findById(productId).orElse(null);
-    }
+    private final ProductRepository productRepository;
 
     public Product save(ProductRegisterDto productRegisterDto) {
         Product product = Product.builder()
@@ -38,7 +37,26 @@ public class ProductService {
         return productRepository.save(byId);
     }
 
-    public List<Product> findByShopIdEquals(Long shopId) {
-        return productRepository.findByShopIdEquals(shopId);
+    public Product findById(Long productId) {
+        return productRepository.findById(productId).orElse(null);
     }
+
+    // shopId로 찾기
+    public List<Map<String, Object>> findAllByShopIdEquals(Long shopId) {
+        return productRepository.findAllByShopIdEquals(shopId);
+    }
+
+    // category로 찾기
+    public List<Map<String, Object>> findAllByCategoryEquals(ProductCategory productCategory) {
+        return productRepository.findAllByCategoryEquals(productCategory.name());
+    }
+
+
+
+
+
+
+
+
+
 }

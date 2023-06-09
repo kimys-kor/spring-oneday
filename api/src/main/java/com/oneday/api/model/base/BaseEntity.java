@@ -1,4 +1,4 @@
-package com.oneday.api.model;
+package com.oneday.api.model.base;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

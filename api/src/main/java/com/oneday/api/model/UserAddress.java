@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
-public class MemberAddress {
+public class UserAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +28,6 @@ public class MemberAddress {
     // 주소 타입 R 도로명, J 지번
     private String addressType;
 
-    private String roadAddress;
-
-    private String jibunAddress;
 
     private BigDecimal lat;
 

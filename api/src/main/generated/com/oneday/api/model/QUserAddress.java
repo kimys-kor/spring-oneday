@@ -10,14 +10,14 @@ import com.querydsl.core.types.Path;
 
 
 /**
- * QMemberAddress is a Querydsl query type for MemberAddress
+ * QUserAddress is a Querydsl query type for UserAddress
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QMemberAddress extends EntityPathBase<MemberAddress> {
+public class QUserAddress extends EntityPathBase<UserAddress> {
 
-    private static final long serialVersionUID = -146036842L;
+    private static final long serialVersionUID = -915082171L;
 
-    public static final QMemberAddress memberAddress = new QMemberAddress("memberAddress");
+    public static final QUserAddress userAddress = new QUserAddress("userAddress");
 
     public final StringPath address = createString("address");
 
@@ -25,28 +25,24 @@ public class QMemberAddress extends EntityPathBase<MemberAddress> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath jibunAddress = createString("jibunAddress");
-
     public final NumberPath<java.math.BigDecimal> lat = createNumber("lat", java.math.BigDecimal.class);
 
     public final NumberPath<java.math.BigDecimal> lon = createNumber("lon", java.math.BigDecimal.class);
-
-    public final StringPath roadAddress = createString("roadAddress");
 
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
 
     public final StringPath zonecode = createString("zonecode");
 
-    public QMemberAddress(String variable) {
-        super(MemberAddress.class, forVariable(variable));
+    public QUserAddress(String variable) {
+        super(UserAddress.class, forVariable(variable));
     }
 
-    public QMemberAddress(Path<? extends MemberAddress> path) {
+    public QUserAddress(Path<? extends UserAddress> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QMemberAddress(PathMetadata metadata) {
-        super(MemberAddress.class, metadata);
+    public QUserAddress(PathMetadata metadata) {
+        super(UserAddress.class, metadata);
     }
 
 }

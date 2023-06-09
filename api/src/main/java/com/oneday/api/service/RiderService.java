@@ -1,32 +1,28 @@
 package com.oneday.api.service;
 
 import com.oneday.api.model.*;
+import com.oneday.api.model.base.UserStatus;
+import com.oneday.api.model.base.OrderStatus;
 import com.oneday.api.model.dto.RiderReadDto;
 import com.oneday.api.model.dto.RiderRegisterDto;
 import com.oneday.api.repository.RiderCustomRepository;
 import com.oneday.api.repository.RiderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
-import java.util.List;
-
 @Service
+@RequiredArgsConstructor
 public class RiderService {
 
-    @Autowired
-    RiderRepository riderRepository;
+    private final RiderRepository riderRepository;
 
-    @Autowired
-    RiderCustomRepository riderCustomRepository;
+    private final RiderCustomRepository riderCustomRepository;
 
-    @Autowired
-    PointHistoryService pointHistoryService;
+    private final PointHistoryService pointHistoryService;
 
-    @Autowired
-    OrdersService ordersService;
+    private final OrdersService ordersService;
 
     public Rider save(RiderRegisterDto dto) {
         Rider rider = Rider.builder()
@@ -34,7 +30,7 @@ public class RiderService {
                 .riderName(dto.getRiderName())
                 .phone(dto.getPhone())
                 .point(0)
-                .status(MemberStatus.NORMAL)
+                .status(UserStatus.NORMAL)
                 .build();
         return riderRepository.save(rider);
     }
@@ -64,7 +60,7 @@ public class RiderService {
     public Rider ordersComplete(Long ordersId, Long riderId) {
         // 주문상태 수정
         Orders orders = ordersService.findById(ordersId);
-        orders.setStatus(OrderStatus.FINISH);
+        orders.setOrderStatus(OrderStatus.COMPLETE);
         ordersService.saveOrders(orders);
 
         double point = orders.getShipPrice() * 0.9;

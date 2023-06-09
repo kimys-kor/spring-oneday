@@ -28,10 +28,6 @@ public class ShopAddress {
     // 주소 타입 R 도로명, J 지번
     private String addressType;
 
-    private String roadAddress;
-
-    private String jibunAddress;
-
     private BigDecimal lat;
 
     private BigDecimal lon;
