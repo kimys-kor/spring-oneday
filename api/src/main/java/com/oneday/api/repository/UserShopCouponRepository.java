@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface UserShopCouponRepository extends JpaRepository<UserShopCoupon, Long> {
 
-    @Query(value = "SELECT sc.id AS shopCouponId, sc.content, sc.end_dt AS endDt, sc.ratio, sc.shop_id, sc.start_dt, sc.title " +
+    @Query(value = "SELECT sc.id AS shopCouponId, sc.content, sc.end_dt AS endDt, sc.is_ratio, sc.shop_id, sc.start_dt, sc.title " +
             "FROM user_shop_coupon usc " +
             "LEFT JOIN shop_coupon sc ON sc.id = usc.shop_coupon_id " +
             "WHERE usc.user_id = :userId AND usc.is_used = false", nativeQuery = true)

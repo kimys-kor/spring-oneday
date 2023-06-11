@@ -15,17 +15,22 @@ public class ProductOptionService {
     private final ProductOptionRepository productOptionRepository;
 
     public ProductOption save(Long productId, String name, int price) {
-        ProductOption menuOption = ProductOption.builder()
+        ProductOption productOption = ProductOption.builder()
                 .productId(productId)
                 .name(name)
                 .price(price)
                 .build();
 
-        return productOptionRepository.save(menuOption);
+        return productOptionRepository.save(productOption);
     }
 
-    public List<Map<String, Object>> findByMenuIdEquals(Long productId) {
+    public List<Map<String, Object>> findByProductIdEquals(Long productId) {
         return productOptionRepository.findByProductIdEquals(productId);
+    }
+
+    // id 값만 찾기
+    public List<Long> findIdListByProductIdEquals(Long productId) {
+        return productOptionRepository.findIdListByProductIdEquals(productId);
     }
 
     public ProductOption findById(Long productOptionId) {
@@ -37,11 +42,17 @@ public class ProductOptionService {
         productOptionRepository.delete(byId);
     }
 
-    public ProductOption update(Long productOptionId, Long productId, String name, int price) {
+    public ProductOption update(Long productOptionId, String name, int price) {
         ProductOption byId = findById(productOptionId);
         byId.setProductId(productOptionId);
         byId.setName(name);
         byId.setPrice(price);
         return productOptionRepository.save(byId);
+    }
+
+    // productId 리스트로 해당 상품옵션들 삭제
+    public void deleteAll(List<Long> productIdList) {
+        List<ProductOption> productOptionsToDelete = productOptionRepository.findByProductIdIn(productIdList);
+        productOptionRepository.deleteAll(productOptionsToDelete);
     }
 }

@@ -50,12 +50,12 @@ public class OrdersService {
                 .build();
         Orders save = ordersRepository.save(orders);
 
-        // 주문에 속한 여러 메뉴들 저장
+        // 주문에 속한 여러 상품들 저장
         List<OrdersDto.OrdersProductDto> ordersProduct = dto.getOrdersProduct();
         for (OrdersDto.OrdersProductDto ordersProductDto : ordersProduct) {
             OrdersProduct save1 = ordersProductService.save(save.getId(), ordersProductDto.getProductId(), ordersProductDto.getQuantity());
 
-            // 주문에 속한 메뉴에 속한 여러 옵션들 저장
+            // 주문에 속한 상품에 속한 여러 옵션들 저장
             List<Long> productOptionIdList = ordersProductDto.getProductOptionId();
             for (Long productOptionId : productOptionIdList) {
                 ordersProductOptionService.save(save.getId(),save1.getId(), productOptionId);
@@ -154,7 +154,7 @@ public class OrdersService {
         }
 
         // 할인쿠폰적용시 실제 할인가격과 주문표의 할인금액 검증
-        if (dto.getShopCouponId() != 0) {
+        if (dto.getShopCouponId() != 0L) {
             ShopCoupon shopCoupon = shopCouponService.findById(dto.getShopCouponId());
             int totalDiscount = calculateTotalDiscount(total, shopCoupon);
             if (dto.getDiscountPrice() != totalDiscount) {
@@ -169,9 +169,12 @@ public class OrdersService {
     private int calculateProductTotal(OrdersDto.OrdersProductDto productDto) {
         Product product = productService.findById(productDto.getProductId());
         int productTotal = product.getPrice() * productDto.getQuantity();
-        for (Long productOptionId : productDto.getProductOptionId()) {
-            ProductOption productOption = productOptionService.findById(productOptionId);
-            productTotal += productOption.getPrice();
+
+        if (productDto.getProductOptionId().size() != 0) {
+            for (Long productOptionId : productDto.getProductOptionId()) {
+                ProductOption productOption = productOptionService.findById(productOptionId);
+                productTotal += productOption.getPrice();
+            }
         }
         return productTotal;
     }

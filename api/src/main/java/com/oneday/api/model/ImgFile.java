@@ -12,7 +12,7 @@ import lombok.*;
 @Entity
 @Table(name = "ImgFile")
 public class ImgFile {
-    @Column(nullable = false)
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -16,7 +16,6 @@ public class Orders extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ORDERS_ID")
     private Long id;
 
     private Long shopId;

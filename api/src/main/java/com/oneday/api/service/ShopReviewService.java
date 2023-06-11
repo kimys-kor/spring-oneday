@@ -58,8 +58,8 @@ public class ShopReviewService {
     }
 
     // 댓글 삭제
-    public void deleteOne(Long shopReviewId) {
-        shopReviewRepository.deleteOne(shopReviewId);
+    public void delete(ShopReview shopReview) {
+        shopReviewRepository.delete(shopReview);
     }
 
 

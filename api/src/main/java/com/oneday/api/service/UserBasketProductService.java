@@ -22,7 +22,7 @@ public class UserBasketProductService {
     public UserBasketProduct save(BasketDto basketDto, Long userId, Long shopId) {
         UserBasketProduct userBasketProduct = UserBasketProduct.builder()
                 .userId(userId)
-                .menuId(basketDto.getProductId())
+                .productId(basketDto.getProductId())
                 .quantity(basketDto.getQuantity())
                 .shopId(shopId)
                 .build();
@@ -43,15 +43,15 @@ public class UserBasketProductService {
 
         for (Map<String, Object> BasketProduct : allByUserIdEquals) {
             Map<String,Object> modifiedProduct = new HashMap<>(BasketProduct);
-            List<Map<String,Object>> productOption = userBasketProductOptionService.findAllByUserBasketMenuId((Long) BasketProduct.get("id"));
+            List<Map<String,Object>> productOption = userBasketProductOptionService.findAllByUserBasketProductId((Long) BasketProduct.get("id"));
             modifiedProduct.put("option", productOption);
             result.add(modifiedProduct);
         }
         return result;
     }
 
-    public String deleteByUserBasketMenuId(Long userId, Long userBasketMenuId) {
-        UserBasketProduct byId = userBasketProductRepository.findById(userBasketMenuId).orElse(null);
+    public String deleteByUserBasketProductId(Long userId, Long userBasketProductId) {
+        UserBasketProduct byId = userBasketProductRepository.findById(userBasketProductId).orElse(null);
 
         // 장바구니 유저 아닐시 에러 처리
         if(byId.getUserId() != userId) return "권한없음";

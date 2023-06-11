@@ -1,6 +1,7 @@
 package com.oneday.api.service;
 
 import com.oneday.api.model.ImgFile;
+import com.oneday.api.model.Product;
 import com.oneday.api.model.Shop;
 import com.oneday.api.model.ShopLike;
 import com.oneday.api.model.dto.ShopReadDto;
@@ -21,31 +22,29 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ShopService {
 
-    private final ShopRepository shopRepository;
-
-    private final ShopCustomRepository shopCustomRepository;
-
-    private final ImgFileService imgFileService;
-
-    private final ShopReviewService shopReviewService;
-
-    private final ShopLikeService shopLikeService;
-
     @Value("${key.imgPath}")
     private String imgPath;
-
     @Value("${key.imgUrl}")
     private String imgUrl;
+    private final ShopRepository shopRepository;
+    private final ShopCustomRepository shopCustomRepository;
+    private final ImgFileService imgFileService;
+    private final ShopReviewService shopReviewService;
+    private final ShopLikeService shopLikeService;
+    private final ProductService productService;
+    private final ProductOptionService productOptionService;
 
 
-    public Shop save(ShopRegisterDto dto) {
+    public Shop save(Long userId,ShopRegisterDto dto) {
         List<String> filePathList = saveImg(dto);
-        Shop shop = new Shop(dto.getName(), dto.getOwnerName(), dto.getBusinessNumber(), dto.getContactNumber(),
+        Shop shop = new Shop(userId, dto.getName(), dto.getOwnerName(), dto.getBusinessNumber(), dto.getContactNumber(),
                 dto.getShopAddress(), dto.getTime(), dto.getShopDescription() ,dto.getLat(), dto.getLon(),
                 filePathList.get(0),filePathList.get(1),filePathList.get(2));
         return shopRepository.save(shop);
@@ -65,8 +64,8 @@ public class ShopService {
 
     public Shop update(Long shopId,ShopRegisterDto dto) {
         List<String> filePathList = saveImg(dto);
-
         Shop byId = findById(shopId);
+
         byId.setName(dto.getName());
         byId.setOwnerName(dto.getOwnerName());
         byId.setBusinessNumber(dto.getBusinessNumber());
@@ -112,9 +111,17 @@ public class ShopService {
         return shopRepository.findById(shopId).orElse(null);
     }
 
-    public void delete(Long shopId) {
-        Shop shop = findById(shopId);
+    // 상점 삭제
+    public void delete(Shop shop) {
         shopRepository.delete(shop);
+        // 상점의 상품도 삭제
+        List<Product> productList = productService.findAllByShopIdEquals(shop.getId());
+        productService.deleteAll(productList);
+        List<Long> productIdList = productList.stream()
+                .map(Product::getId)
+                .collect(Collectors.toList());
+        // 상품의 옵션도 삭제
+        productOptionService.deleteAll(productIdList);
     }
 
     // k 변환
@@ -140,9 +147,17 @@ public class ShopService {
     private List<String> saveImg(ShopRegisterDto dto) {
         List<MultipartFile> files = new ArrayList<>();
         List<String> filePathList = new ArrayList<>();
+
+        System.out.println(dto.getProfileImg1()+" 이미지1");
+        System.out.println(dto.getProfileImg2()+" 이미지2");
+        System.out.println(dto.getProfileImg3()+" 이미지3");
+
         if(dto.getProfileImg1() != null) files.add(dto.getProfileImg1());
         if(dto.getProfileImg2() != null) files.add(dto.getProfileImg2());
         if(dto.getProfileImg3() != null) files.add(dto.getProfileImg3());
+
+        System.out.println(filePathList.size()+" 사이즈");
+
 
 
         for (MultipartFile file : files) {

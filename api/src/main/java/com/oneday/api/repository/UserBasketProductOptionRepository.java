@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface UserBasketProductOptionRepository extends JpaRepository<UserBasketProductOption, Integer> {
 
-    @Query(value = "select ubpo.id, po.menu_id as menuId, po.name, po.price " +
+    @Query(value = "select ubpo.id, po.product_id, po.name, po.price " +
             "from user_basket_product_option ubpo " +
             "left join product_option po on po.id = ubpo.product_option_id " +
             "where user_basket_product_id = :userBasketProductId", nativeQuery = true)

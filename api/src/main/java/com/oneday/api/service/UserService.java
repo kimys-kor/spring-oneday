@@ -2,7 +2,7 @@ package com.oneday.api.service;
 
 import com.oneday.api.model.User;
 import com.oneday.api.model.dto.UserDto;
-import com.oneday.api.repository.MemberCustomRepository;
+import com.oneday.api.repository.UserCustomRepository;
 import com.oneday.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,7 +21,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final MemberCustomRepository memberCustomRepository;
+    private final UserCustomRepository userCustomRepository;
 
     public User findByEmail(String email) {
         User byId = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
@@ -41,7 +41,7 @@ public class UserService {
     }
 
     public Page<UserDto> findAll(Pageable pageable) {
-        return memberCustomRepository.findAll(pageable);
+        return userCustomRepository.findAll(pageable);
     }
 
 

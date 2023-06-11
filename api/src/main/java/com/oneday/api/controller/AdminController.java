@@ -2,21 +2,27 @@ package com.oneday.api.controller;
 
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
+import com.oneday.api.common.security.PrincipalDetails;
 import com.oneday.api.model.*;
 import com.oneday.api.model.base.OrderStatus;
+import com.oneday.api.model.base.UserRole;
 import com.oneday.api.model.dto.*;
 import com.oneday.api.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,90 +31,43 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AdminController {
 
-    @Value("${key.imgPath}")
-    private String imgPath;
-
-    @Value("${key.imgUrl}")
-    private String imgUrl;
-
-    private final ImgFileService imgFileService;
-
     private final UserService userService;
-
     private final ShopService shopService;
-
     private final ProductService productService;
-
+    private final ProductOptionService productOptionService;
     private final RiderService riderService;
-
     private final OrdersService ordersService;
 
-    private final OrdersAssignService ordersAssignService;
 
-
-    @GetMapping(value = "/test")
-    public Response<Object> findOne() {
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,"hihi");
-    }
-
-    @PostMapping(value = "/upload")
-    public Response<Object> upload(
-            @RequestParam MultipartFile file
+    // 유저 상세
+    @GetMapping(value = "/user/findone")
+    public Response<Object> findOneUser(
+            @RequestParam Long userId
     ) {
-
-        LocalDateTime dateTimeNow = LocalDateTime.now();
-        ImgFile imgFile = new ImgFile();
-        String fileNameDateTime = dateTimeNow.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        try {
-            String origFileName = file.getOriginalFilename();
-            String fileName = fileNameDateTime + origFileName;
-            String savePath = imgPath;
-
-            String filePath = savePath + "/" + fileName;
-            file.transferTo(new File(filePath));
-
-            imgFile.setOrigFileName(origFileName);
-            imgFile.setFilePath(filePath);
-            imgFile.setFileName(fileName);
-            imgFile = imgFileService.save(imgFile);
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,"upload Success");
-    }
-
-    // 멤버 상세
-    @GetMapping(value = "/findOne")
-    public Response<Object> findOne(
-            @RequestParam Long memberId
-    ) {
-        User byId = userService.findById(memberId).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다 ㅠ"));
+        User byId = userService.findById(userId).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다 ㅠ"));
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,byId);
     }
 
-    // 멤버 리스트
-    @GetMapping(value = "/member/findAll")
-    public Response<Object> findAllMember(Pageable pageable
+    // 유저 리스트
+    @GetMapping(value = "/user/findall")
+    public Response<Object> findAllUser(Pageable pageable
     ) {
         Page<UserDto> all = userService.findAll(pageable);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
     }
 
-
-    // 상점 추가
-    @PostMapping(value = "/register/shop")
-    public Response<Object> registerShop(
+    // 상점 등록 (어드민 가입)
+    @PostMapping(value = "/shop/save/byadmin")
+    public Response<Map<String, Object>> saveShopByAdmin(
+            long userId,
             ShopRegisterDto shopRegisterDto
-            ) {
+    ) {
 
-        shopService.save(shopRegisterDto);
-
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+        Shop savedShop = shopService.save(userId,shopRegisterDto);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, savedShop);
     }
 
-    // 상점 업데이트
+    // 상점 수정
     @PostMapping(value = "/shop/update")
     public Response<Object> updateShop(
             Long shopId,
@@ -118,28 +77,26 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 
-    //  상점 리스트
-    @GetMapping(value = "/shop/findAll")
-    public Response<Object> findAllShop(Pageable pageable
-    ) {
-//        Page<ShopReadDto> all = shopService.findAll(pageable);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
-    }
-
     // 상점 상세
-    @GetMapping(value = "/shop/findOne")
-    public Response<Object> findOneShop(Long shopId
+    @GetMapping(value = "/shop/findone")
+    public Response<Object> findOneShop(
+            @RequestParam Long shopId
     ) {
         Shop byId = shopService.findById(shopId);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,byId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, byId);
     }
 
-    // 상점 삭제
+    // 상점 삭제 (상품 모두 삭제, 상품의 옵션들 모두삭제)
     @GetMapping(value = "/shop/delete")
-    public Response<Object> deleteShop(Long shopId
+    public Response<Object> deleteShop(
+            @RequestParam Long shopId
     ) {
-        shopService.delete(shopId);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+        // 없는 상점일시 에러
+        Shop byId = shopService.findById(shopId);
+        if(byId == null) return new Response(ResultCode.SHOP_NOT_FOUND);
+
+        shopService.delete(byId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, byId);
     }
 
     // 상품 추가
@@ -147,6 +104,10 @@ public class AdminController {
     public Response<Object> saveProduct(
             ProductRegisterDto productRegisterDto
     ) {
+        // 없는 상점일시 에러 처리
+        Shop shop = shopService.findById(productRegisterDto.getShopId());
+        if(shop== null) return new Response(ResultCode.SHOP_NOT_FOUND);
+
         Product save = productService.save(productRegisterDto);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,  save);
     }
@@ -157,30 +118,74 @@ public class AdminController {
             Long productId,
             ProductRegisterDto productRegisterDto
     ) {
+        // 없는 상품일시 에러 처리
+        Product product = productService.findById(productId);
+        if(product== null) return new Response(ResultCode.PRODUCT_NOT_FOUND);
+
         Product update = productService.update(productId, productRegisterDto);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,  update);
     }
 
-    // 상품 상세
-    @GetMapping(value = "/product/findOne")
-    public Response<Object> findOneProduct(
+    // 상품 삭제 (옵션들 모두 삭제)
+    @GetMapping(value = "/product/delete")
+    public Response<Object> deleteProduct(
             Long productId
     ) {
-        Product byId = productService.findById(productId);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  byId);
+        // 없는 상품일시 에러 처리
+        Product product = productService.findById(productId);
+        if(product== null) return new Response(ResultCode.PRODUCT_NOT_FOUND);
+
+        productService.deleteByIdEquals(productId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 
-    // 상점별 상품 리스트
-    @GetMapping(value = "/product/findAll")
-    public Response<Object> findAllProduct(
-            Long shopId
+    // 상품 옵션 추가
+    @PostMapping(value = "/productoption/save")
+    public Response<Map<String, Object>> saveProductOption(
+            @RequestParam Long productId,
+            @RequestParam String name,
+            @RequestParam int price
     ) {
-        List<Map<String, Object>> allByShopIdEquals = productService.findAllByShopIdEquals(shopId);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  allByShopIdEquals);
+        // 없는 메뉴 에러 처리
+        if(productService.findById(productId) == null)  return new Response<>( ResultCode.PRODUCT_NOT_FOUND);
+
+        productOptionService.save(productId,name,price);
+
+        return new Response<>( ResultCode.DATA_NORMAL_PROCESSING);
     }
+
+    // 상품 옵션 수정
+    @PostMapping(value = "/productoption/update")
+    public Response<Map<String, Object>> updateProductOption(
+            @RequestParam Long productOptionId,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) int price
+    ) {
+        // 없는 메뉴 에러 처리
+        if(productOptionService.findById(productOptionId) == null)  return new Response<>( ResultCode.PRODUCTOPTION_NOT_FOUND);
+
+        productOptionService.update(productOptionId,name,price);
+
+        return new Response<>( ResultCode.DATA_NORMAL_PROCESSING);
+    }
+    
+    // 상품 옵션 삭제
+    @GetMapping(value = "/productoption/delete")
+    public Response<Map<String, Object>> deleteProductOption(
+            @RequestParam Long productOptionId
+    ) {
+
+        // 없는 메뉴 에러 처리
+        if(productOptionService.findById(productOptionId) == null)  return new Response<>( ResultCode.PRODUCTOPTION_NOT_FOUND);
+
+        productOptionService.delete(productOptionId);
+
+        return new Response<>( ResultCode.DATA_NORMAL_PROCESSING);
+    }
+
 
     // 주문 현황 리스트
-    @GetMapping(value = "/orders/findAll")
+    @GetMapping(value = "/orders/findall")
     public Response<Object> findAllOrders(
             @RequestParam(required = false) String startDt,
             @RequestParam(required = false) String endDt,
@@ -190,6 +195,37 @@ public class AdminController {
         Page<OrdersReadDto> all = ordersService.findAll(startDt,endDt,orderStatus,pageable);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,  all);
     }
+
+    // 가게별 주문내역 확인
+    @GetMapping(value = "/orders/shop/findall")
+    public Response<Map<String, Object>> findShopOrders(
+            @RequestParam Long shopId
+    ) {
+
+        List<Map<String, Object>> byShop = ordersService.findShopOrders(shopId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,byShop);
+    }
+
+    // 가게 주문 취소 신청 승인
+    @GetMapping(value = "/orders/cancle/accept")
+    public Response<Map<String, Object>> orderCancleAccept(
+            @RequestParam Long ordersId ) {
+
+        Orders orders = ordersService.findById(ordersId);
+        // 없는 주문 에러 처리
+        if(orders== null) return new Response(ResultCode.ORDERS_NOT_FOUND);
+        // 접수된 주문 에러 처리
+        if(orders.getOrderStatus() != OrderStatus.WAITING) return new Response(ResultCode.ORDERS_CANNOT_CANCLE);
+
+        // 주문 취소 변경
+        Orders updatedOrders = ordersService.updateOrders(ordersId, OrderStatus.CANCLE);
+        Map<String, Object> result = new HashMap<>();
+        result.put("orders", orders);
+
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, updatedOrders);
+    }
+
+    // 가게
 
     // 라이더 등록
     @PostMapping(value = "/riders/save")
@@ -211,7 +247,7 @@ public class AdminController {
     }
 
     // 라이더 리스트
-    @GetMapping(value = "/rider/findAll")
+    @GetMapping(value = "/rider/findall")
     public Response<Object> findAllRider(
             Pageable pageable
     ) {
@@ -220,7 +256,7 @@ public class AdminController {
     }
 
     // 라이더 상세정보
-    @GetMapping(value = "/rider/findOne")
+    @GetMapping(value = "/rider/findone")
     public Response<Object> findAllRider(
             Long riderId
     ) {
@@ -237,30 +273,8 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 
-    // 라이더 주문 배정
-    @GetMapping(value = "/rider/ordersAssign")
-    public Response<Object> ordersAssign(
-            Long riderId,
-            Long ordersId
-    ) {
-        OrdersAssign ordersAssign = OrdersAssign.builder()
-                .ordersId(ordersId)
-                .riderId(riderId)
-                .build();
 
-        ordersAssignService.save(ordersAssign);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
-    }
 
-    // 라이더 배달 완료
-    @GetMapping(value = "/rider/orderComplete")
-    public Response<Object> orderComplete(
-            Long riderId,
-            Long ordersId
-    ) {
-        riderService.ordersComplete(ordersId,riderId);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
-    }
 
 
 }

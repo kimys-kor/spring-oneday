@@ -15,7 +15,6 @@ public class Product extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PRODUCT_ID")
     private Long id;
 
     private Long shopId;
@@ -23,7 +22,7 @@ public class Product extends BaseTime {
     @Enumerated(EnumType.STRING)
     private ProductCategory productCategory;
 
-
+    private String name;
     private int price;
 
     private int stock;

@@ -16,12 +16,12 @@ public class OrdersProductOptionService {
 
 
     public OrdersProductOption save(Long ordersId, Long ordersProductId, Long ProductOptionId) {
-        OrdersProductOption ordersMenuOption = OrdersProductOption.builder()
+        OrdersProductOption ordersProductOption = OrdersProductOption.builder()
                 .orderId(ordersId)
                 .ordersProductId(ordersProductId)
                 .productOptionId(ProductOptionId)
                 .build();
-        return ordersProductOptionRepository.save(ordersMenuOption);
+        return ordersProductOptionRepository.save(ordersProductOption);
     }
 
     public List<Map<String, Object>> findAllByOrdersProductId(Long ordersProductId) {

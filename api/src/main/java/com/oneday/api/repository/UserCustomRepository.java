@@ -14,9 +14,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.oneday.api.model.base.UserRole.ROLE_USER;
+
 
 @Repository
-public class MemberCustomRepository {
+public class UserCustomRepository {
 
     @PersistenceContext
     private EntityManager em;
@@ -37,6 +39,9 @@ public class MemberCustomRepository {
                         user.status
                 ))
                 .from(user)
+                .where(
+                        user.role.eq(ROLE_USER)
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();

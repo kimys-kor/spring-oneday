@@ -1,5 +1,6 @@
 package com.oneday.api.model;
 
+import com.oneday.api.model.base.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -10,7 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Setter
 @Builder
-public class ShopReview {
+public class ShopReview extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

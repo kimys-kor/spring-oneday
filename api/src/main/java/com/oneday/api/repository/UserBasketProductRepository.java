@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface UserBasketProductRepository extends JpaRepository<UserBasketProduct, Long> {
 
-    @Query(value = "select ubp.id, p.title, p.content, p.price, ubp.quantity, ubp.shop_id " +
+    @Query(value = "select ubp.id, p.name, p.product_category, p.price, ubp.quantity, ubp.shop_id " +
             "from user_basket_product ubp " +
             "left join product p on p.id = ubp.product_id " +
             "where ubp.user_id = :userId", nativeQuery = true)

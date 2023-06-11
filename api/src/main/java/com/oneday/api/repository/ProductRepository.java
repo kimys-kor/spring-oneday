@@ -14,11 +14,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "select * " +
             "from product " +
             "where shop_id = :shopId",nativeQuery = true)
-    List<Map<String, Object>> findAllByShopIdEquals(@Param("shopId") Long shopId);
+    List<Product> findAllByShopIdEquals(@Param("shopId") Long shopId);
+
+
 
     @Query(value = "select * " +
             "from product " +
             "where product_category = :productCategory",nativeQuery = true)
     List<Map<String, Object>> findAllByCategoryEquals(@Param("productCategory") String productCategory);
 
+    void deleteAllByShopIdEquals(@Param("shopId") Long shopId);
 }

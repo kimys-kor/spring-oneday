@@ -35,8 +35,10 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .apply(new MyCustomDsl()) // 커스텀 필터 등록
                 .and()
-                .authorizeRequests(authroize -> authroize.requestMatchers("/user/view/**")
-                        .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+                .authorizeRequests(authroize -> authroize.requestMatchers("/user/**")
+                        .access("hasRole('ROLE_USER') or hasRole('ROLE_SHOP') or hasRole('ROLE_ADMIN')")
+                        .requestMatchers("/shop/**")
+                        .access("hasRole('ROLE_SHOP') or hasRole('ROLE_ADMIN')")
                         .requestMatchers("/admin/**")
                         .access("hasRole('ROLE_ADMIN')")
                         .anyRequest().permitAll())

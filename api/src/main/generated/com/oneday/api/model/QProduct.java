@@ -26,6 +26,8 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final StringPath name = createString("name");
+
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
     public final EnumPath<com.oneday.api.model.base.ProductCategory> productCategory = createEnum("productCategory", com.oneday.api.model.base.ProductCategory.class);

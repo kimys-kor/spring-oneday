@@ -16,8 +16,8 @@ public class UserAddresService {
 
     private final UserAddresRepository userAddressRepository;
 
-    public UserAddress findById(Long memberAddressId) {
-        return userAddressRepository.findById(memberAddressId).orElse(null);
+    public UserAddress findById(Long userAddressId) {
+        return userAddressRepository.findById(userAddressId).orElse(null);
     }
 
     public List<Map<String, Object>> findByUserIdEquals(Long userId) {

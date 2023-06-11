@@ -14,7 +14,6 @@ public class PointHistory extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "POINTHISTORY_ID")
     private Long id;
 
     private Long ordersId;

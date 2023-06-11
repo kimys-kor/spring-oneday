@@ -15,7 +15,6 @@ public class ShopAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "SHOP_ADDRESS_ID")
     private Long id;
 
     private Long shopId;

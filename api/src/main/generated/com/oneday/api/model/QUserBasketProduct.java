@@ -21,7 +21,7 @@ public class QUserBasketProduct extends EntityPathBase<UserBasketProduct> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Long> menuId = createNumber("menuId", Long.class);
+    public final NumberPath<Long> productId = createNumber("productId", Long.class);
 
     public final NumberPath<Long> quantity = createNumber("quantity", Long.class);
 

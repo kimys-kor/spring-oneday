@@ -10,7 +10,7 @@ public class OrdersReadDto {
 
     private Long shopId;
 
-    private Long memberId;
+    private Long userId;
 
     private String address;
 

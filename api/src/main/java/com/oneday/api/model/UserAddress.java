@@ -15,7 +15,6 @@ public class UserAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MEMBER_ADDRESS_ID")
     private Long id;
 
     private Long userId;

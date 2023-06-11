@@ -15,7 +15,6 @@ public class OrdersProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ORDERS_PRODUCT_ID")
     private Long id;
 
     private Long ordersId;

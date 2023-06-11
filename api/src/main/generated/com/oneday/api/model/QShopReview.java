@@ -19,7 +19,12 @@ public class QShopReview extends EntityPathBase<ShopReview> {
 
     public static final QShopReview shopReview = new QShopReview("shopReview");
 
+    public final com.oneday.api.model.base.QBaseTime _super = new com.oneday.api.model.base.QBaseTime(this);
+
     public final StringPath Content = createString("Content");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdDt = _super.createdDt;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -36,6 +41,9 @@ public class QShopReview extends EntityPathBase<ShopReview> {
     public final NumberPath<Integer> score = createNumber("score", Integer.class);
 
     public final NumberPath<Long> shopId = createNumber("shopId", Long.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedDt = _super.updatedDt;
 
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
 

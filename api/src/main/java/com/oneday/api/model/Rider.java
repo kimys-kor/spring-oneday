@@ -15,7 +15,6 @@ public class Rider extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RIDER_ID")
     private Long id;
 
     private String phone;

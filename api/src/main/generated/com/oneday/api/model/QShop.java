@@ -55,6 +55,8 @@ public class QShop extends EntityPathBase<Shop> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDt = _super.updatedDt;
 
+    public final NumberPath<Long> userId = createNumber("userId", Long.class);
+
     public QShop(String variable) {
         super(Shop.class, forVariable(variable));
     }

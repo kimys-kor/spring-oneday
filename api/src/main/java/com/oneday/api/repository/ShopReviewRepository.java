@@ -13,7 +13,7 @@ public interface ShopReviewRepository extends JpaRepository<ShopReview, Long> {
             "from shop_review " +
             "where shop_id = :shopId " +
             "ORDER BY created_dt DESC ",nativeQuery = true)
-    List<ShopReview> findAllByShopIdEquals(@Param("shopId") Long shopid);
+    List<ShopReview> findAllByShopIdEquals(@Param("shopId") Long shopId);
 
 
 

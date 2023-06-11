@@ -23,12 +23,12 @@ public class UserBasketProductOptionService {
         return userBasketProductOptionRepository.save(userBasketProductOption);
     }
 
-    public List<Map<String,Object>> findAllByUserBasketMenuId(Long userBasketProductId) {
+    public List<Map<String,Object>> findAllByUserBasketProductId(Long userBasketProductId) {
         return userBasketProductOptionRepository.findAllByUserBasketProductId(userBasketProductId);
     }
 
-    public void deleteAll(Long userBasketMenuId) {
-        List<UserBasketProductOption> basketOptionList = userBasketProductOptionRepository.findAllByUserBasketProductIdEquals(userBasketMenuId);
+    public void deleteAll(Long userBasketProductId) {
+        List<UserBasketProductOption> basketOptionList = userBasketProductOptionRepository.findAllByUserBasketProductIdEquals(userBasketProductId);
         userBasketProductOptionRepository.deleteAll(basketOptionList);
     }
 }

@@ -18,6 +18,6 @@ public class UserBasketProduct {
     private Long userId;
 
     private Long shopId;
-    private Long menuId;
+    private Long productId;
     private long quantity;
 }

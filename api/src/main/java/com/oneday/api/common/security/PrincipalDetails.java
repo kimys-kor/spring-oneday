@@ -53,7 +53,7 @@ public class PrincipalDetails implements UserDetails {
         return true;
     }
 
-    // Member의 권한을 리턴하는 곳
+    // User의 권한을 리턴하는 곳
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();

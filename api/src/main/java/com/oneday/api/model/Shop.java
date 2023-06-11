@@ -16,8 +16,9 @@ public class Shop extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "SHOP_ID")
     private Long id;
+
+    private Long userId;
 
     private String name;
 
@@ -46,9 +47,10 @@ public class Shop extends BaseTime {
 
     private int reviewNum;
 
-    public Shop(String name, String ownerName, String businessNumber, String contactNumber,
+    public Shop(Long userId,String name, String ownerName, String businessNumber, String contactNumber,
                 String shopAddress, String time, String shopDescription, BigDecimal lat, BigDecimal lon,
                 String profile1, String profile2, String profile3) {
+        this.userId = userId;
         this.name = name;
         this.ownerName = ownerName;
         this.businessNumber = businessNumber;
