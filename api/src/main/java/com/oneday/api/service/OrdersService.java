@@ -193,7 +193,10 @@ public class OrdersService {
     }
 
     public Integer countAllByOrderStatusEquals(OrderStatus orderStatus) {
-        return ordersRepository.countAllByOrderStatusEquals(orderStatus);
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end = today.atTime(LocalTime.MAX);
+        return ordersRepository.countAllByOrderStatusEquals(orderStatus, start, end);
     }
 
     public List countAllByCreatedDtBetween() {

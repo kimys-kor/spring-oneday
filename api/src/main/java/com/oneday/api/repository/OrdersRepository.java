@@ -26,7 +26,10 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
             "ORDER BY created_dt DESC ",nativeQuery = true)
     List<Map<String, Object>> findAllByShopIdEquals(@Param("shopId") Long shopId);
 
-    Integer countAllByOrderStatusEquals(OrderStatus orderStatus);
+    @Query("SELECT COUNT(o) FROM Orders o WHERE o.orderStatus = :orderStatus AND o.createdDt between :start AND :end")
+    Integer countAllByOrderStatusEquals(@Param("orderStatus") OrderStatus orderStatus,
+                                        @Param("start") LocalDateTime start,
+                                        @Param("end") LocalDateTime end);
 
     Integer countAllByCreatedDtBetween(LocalDateTime start, LocalDateTime end);
 
