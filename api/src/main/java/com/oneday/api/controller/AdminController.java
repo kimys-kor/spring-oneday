@@ -3,6 +3,7 @@ package com.oneday.api.controller;
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
 import com.oneday.api.model.*;
+import com.oneday.api.model.base.ComplainCategory;
 import com.oneday.api.model.base.OrderStatus;
 import com.oneday.api.model.dto.*;
 import com.oneday.api.service.*;
@@ -28,28 +29,31 @@ public class AdminController {
     private final ProductOptionService productOptionService;
     private final RiderService riderService;
     private final OrdersService ordersService;
+    private final ComplainService complainService;
 
     // 대시보드 주문 상태
     @GetMapping(value = "/dashboard/ordersstatus")
-    public Response<Object> dashboardOrderStatus(
+    public Response<Object> getDashboardOrderStatus(
     ) {
 
         Integer waiting = ordersService.countAllByOrderStatusEquals(OrderStatus.WAITING);
         Integer indelivery = ordersService.countAllByOrderStatusEquals(OrderStatus.INDELIVERY);
         Integer complete = ordersService.countAllByOrderStatusEquals(OrderStatus.COMPLETE);
+        Integer complain = complainService.countDayComplain();
 
         Map<String, Object> result = new HashMap<>();
         result.put("waiting", waiting);
         result.put("indelivery", indelivery);
         result.put("complete", complete);
+        result.put("complain", complain);
 
 
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,result);
     }
 
-    // 대시보드 라인 차트
+    // 대시보드 일주일 주문량 라인 차트
     @GetMapping(value = "/dashboard/weekorders")
-    public Response<Object> weekOrdersData(
+    public Response<Object> getWeekOrdersData(
     ) {
 
         List data = ordersService.countAllByCreatedDtBetween();
@@ -65,13 +69,47 @@ public class AdminController {
 
     // 대시보드 5일 주문 금액 막대 차트
     @GetMapping(value = "/dashboard/fiveday/amount")
-    public Response<Object> fivedayAmount(
+    public Response<Object> getFivedayAmount(
     ) {
 
         List result = ordersService.countFiveDayAmount();
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,result);
     }
 
+    // 대시보드 최근 일주일 불편 신고 파이 차트
+    @GetMapping(value = "/dashboard/complain")
+    public Response<Object> getWeekComplain(
+    ) {
+
+        Integer broken = complainService.countWeekComplain(ComplainCategory.BROKEN);
+        Integer delay = complainService.countWeekComplain(ComplainCategory.DELAY);
+        Integer missing = complainService.countWeekComplain(ComplainCategory.MISSING);
+        Integer paymentFail = complainService.countWeekComplain(ComplainCategory.PAYMENTFAILED);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("broken", broken);
+        map.put("delay", delay);
+        map.put("missing", missing);
+        map.put("paymentFail", paymentFail);
+
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,map);
+    }
+
+    // 대시보드 일주일 신규 회원 라인 차트
+    @GetMapping(value = "/dashboard/weekuser")
+    public Response<Object> getWeekNewUserData(
+    ) {
+
+        List data = userService.countAllByCreatedDtBetween();
+
+        List result = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", "week");
+        map.put("data", data);
+        result.add(map);
+
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,result);
+    }
 
     // 유저 상세
     @GetMapping(value = "/user/findone")

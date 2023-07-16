@@ -11,7 +11,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +46,28 @@ public class UserService {
 
     public Page<UserDto> findAll(Pageable pageable) {
         return userCustomRepository.findAll(pageable);
+    }
+
+    public List countAllByCreatedDtBetween() {
+        LocalDate today = LocalDate.now();
+
+        List data = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            LocalDate day = today.minusDays(i);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd");
+            String formattedDay = day.format(formatter);
+
+            LocalDateTime start = day.atStartOfDay();
+            LocalDateTime end = day.atTime(LocalTime.MAX);
+            Integer count = userRepository.countAllByCreatedDtBetween(start, end);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("x", formattedDay);
+            map.put("y", count);
+            data.add(map);
+        }
+
+        return data;
     }
 
 
