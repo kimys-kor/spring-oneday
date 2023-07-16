@@ -111,6 +111,14 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,result);
     }
 
+    // 유저 리스트
+    @GetMapping(value = "/user/findall")
+    public Response<Object> findAllUser(Pageable pageable
+    ) {
+        Page<UserDto> all = userService.findAll(pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
+    }
+
     // 유저 상세
     @GetMapping(value = "/user/findone")
     public Response<Object> findOneUser(
@@ -120,13 +128,7 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,byId);
     }
 
-    // 유저 리스트
-    @GetMapping(value = "/user/findall")
-    public Response<Object> findAllUser(Pageable pageable
-    ) {
-        Page<UserDto> all = userService.findAll(pageable);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
-    }
+
 
     // 상점 등록 (어드민 가입)
     @PostMapping(value = "/shop/save/byadmin")

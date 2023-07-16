@@ -31,10 +31,11 @@ public class UserCustomRepository {
 
 
         QueryResults<UserDto> results = queryFactory.select(Projections.fields(UserDto.class,
+                        user.status,
                         user.id,
+                        user.phoneNum,
                         user.email,
                         user.nickname,
-                        user.phoneNum,
                         user.createdDt,
                         user.status
                 ))

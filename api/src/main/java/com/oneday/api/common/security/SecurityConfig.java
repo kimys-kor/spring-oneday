@@ -43,8 +43,6 @@ public class SecurityConfig {
                         .access("hasRole('ROLE_ADMIN')")
                         .anyRequest().permitAll())
                 .build();
-
-
     }
 
     public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
@@ -53,7 +51,7 @@ public class SecurityConfig {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
                     .addFilter(corsConfig.corsFilter())
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager))
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager,userRepository))
                     .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository));
         }
     }

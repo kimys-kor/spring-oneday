@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,6 +41,8 @@ public class User extends BaseTime {
     // oauth를 통해 가입한 회원
     private String provider;  // google
     private String providerId; // googleId(primaryKey)
+
+    private LocalDateTime lastLogin;
 
 
 

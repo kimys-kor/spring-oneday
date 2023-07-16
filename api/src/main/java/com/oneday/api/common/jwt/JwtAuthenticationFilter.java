@@ -1,11 +1,13 @@
 package com.oneday.api.common.jwt;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
 import com.oneday.api.common.security.PrincipalDetails;
 import com.oneday.api.model.dto.LoginRequestDto;
+import com.oneday.api.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
     private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
 
     // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
     // 인증 요청시에 실행되는 함수 => /login
@@ -67,7 +70,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 authenticationManager.authenticate(authenticationToken);
 
         PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
-        System.out.println("Authentication : "+principalDetailis.getUser().getEmail());
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        userRepository.updateLastLogin(principalDetailis.getUser().getId(), currentDateTime);
+
         return authentication;
     }
 
