@@ -11,6 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -172,7 +176,7 @@ public class OrdersService {
 
         if (productDto.getProductOptionId().size() != 0) {
             for (Long productOptionId : productDto.getProductOptionId()) {
-                ProductOption productOption = productOptionService.findById(productOptionId);
+                ProductOption productOption = productOptionService.findById(productOptionId).orElse(null);
                 productTotal += productOption.getPrice();
             }
         }
@@ -186,5 +190,54 @@ public class OrdersService {
         } else {
             return total - shopCoupon.getAmount();
         }
+    }
+
+    public Integer countAllByOrderStatusEquals(OrderStatus orderStatus) {
+        return ordersRepository.countAllByOrderStatusEquals(orderStatus);
+    }
+
+    public List countAllByCreatedDtBetween() {
+        LocalDate today = LocalDate.now();
+
+        List data = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            LocalDate day = today.minusDays(i);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd");
+            String formattedDay = day.format(formatter);
+
+            LocalDateTime start = day.atStartOfDay();
+            LocalDateTime end = day.atTime(LocalTime.MAX);
+            Integer count = ordersRepository.countAllByCreatedDtBetween(start, end);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("x", formattedDay);
+            map.put("y", count);
+            data.add(map);
+        }
+
+        return data;
+    }
+
+    public List countFiveDayAmount() {
+        LocalDate today = LocalDate.now();
+
+        List data = new ArrayList();
+        for (int i = 0; i < 5; i++) {
+            LocalDate day = today.minusDays(i);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd");
+            String formattedDay = day.format(formatter);
+
+            LocalDateTime start = day.atStartOfDay();
+            LocalDateTime end = day.atTime(LocalTime.MAX);
+            System.out.println(start+"스타트");
+            System.out.println(end+"엔드");
+            Integer price = ordersRepository.getTotalAmount(start, end).orElse(0);
+
+            Map<Object, Object> map = new HashMap<>();
+            map.put("x", formattedDay);
+            map.put(i, price);
+            data.add(map);
+        }
+        return data;
     }
 }

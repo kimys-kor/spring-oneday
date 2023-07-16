@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,17 +34,17 @@ public class ProductOptionService {
         return productOptionRepository.findIdListByProductIdEquals(productId);
     }
 
-    public ProductOption findById(Long productOptionId) {
-        return productOptionRepository.findById(productOptionId).orElse(null);
+    public Optional<ProductOption> findById(Long productOptionId) {
+       return productOptionRepository.findById(productOptionId);
     }
 
     public void delete(Long productOptionId) {
-        ProductOption byId = findById(productOptionId);
+        ProductOption byId = findById(productOptionId).orElse(null);
         productOptionRepository.delete(byId);
     }
 
     public ProductOption update(Long productOptionId, String name, int price) {
-        ProductOption byId = findById(productOptionId);
+        ProductOption byId = findById(productOptionId).orElse(null);
         byId.setProductId(productOptionId);
         byId.setName(name);
         byId.setPrice(price);

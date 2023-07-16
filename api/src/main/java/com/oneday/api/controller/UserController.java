@@ -9,6 +9,7 @@ import com.oneday.api.model.*;
 import com.oneday.api.model.base.OrderStatus;
 import com.oneday.api.model.dto.*;
 import com.oneday.api.service.*;
+import io.micrometer.observation.Observation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -93,8 +94,12 @@ public class UserController {
         if(productService.findById(productId) == null)  return new Response<>( ResultCode.PRODUCT_NOT_FOUND);
 
         List<Map<String, Object>> productOptions = productOptionService.findByProductIdEquals(productId);
+        Observation.CheckedCallable<String, Throwable> stringThrowableCheckedCallable = () -> "hello world!";
         return new Response(ResultCode.DATA_NORMAL_PROCESSING, productOptions);
     }
+
+
+
 
     // 주문 하기
     @PostMapping(value = "/orders/save")

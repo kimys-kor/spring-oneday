@@ -2,26 +2,17 @@ package com.oneday.api.controller;
 
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
-import com.oneday.api.common.security.PrincipalDetails;
 import com.oneday.api.model.*;
 import com.oneday.api.model.base.OrderStatus;
-import com.oneday.api.model.base.UserRole;
 import com.oneday.api.model.dto.*;
 import com.oneday.api.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +28,49 @@ public class AdminController {
     private final ProductOptionService productOptionService;
     private final RiderService riderService;
     private final OrdersService ordersService;
+
+    // 대시보드 주문 상태
+    @GetMapping(value = "/dashboard/ordersstatus")
+    public Response<Object> dashboardOrderStatus(
+    ) {
+
+        Integer waiting = ordersService.countAllByOrderStatusEquals(OrderStatus.WAITING);
+        Integer indelivery = ordersService.countAllByOrderStatusEquals(OrderStatus.INDELIVERY);
+        Integer complete = ordersService.countAllByOrderStatusEquals(OrderStatus.COMPLETE);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("waiting", waiting);
+        result.put("indelivery", indelivery);
+        result.put("complete", complete);
+
+
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,result);
+    }
+
+    // 대시보드 라인 차트
+    @GetMapping(value = "/dashboard/weekorders")
+    public Response<Object> weekOrdersData(
+    ) {
+
+        List data = ordersService.countAllByCreatedDtBetween();
+
+        List result = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", "week");
+        map.put("data", data);
+        result.add(map);
+
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,result);
+    }
+
+    // 대시보드 5일 주문 금액 막대 차트
+    @GetMapping(value = "/dashboard/fiveday/amount")
+    public Response<Object> fivedayAmount(
+    ) {
+
+        List result = ordersService.countFiveDayAmount();
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,result);
+    }
 
 
     // 유저 상세

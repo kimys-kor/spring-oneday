@@ -1,8 +1,8 @@
 package com.oneday.api.service;
 
 import com.oneday.api.model.*;
-import com.oneday.api.model.base.UserStatus;
 import com.oneday.api.model.base.OrderStatus;
+import com.oneday.api.model.base.UserStatus;
 import com.oneday.api.model.dto.RiderReadDto;
 import com.oneday.api.model.dto.RiderRegisterDto;
 import com.oneday.api.repository.RiderCustomRepository;

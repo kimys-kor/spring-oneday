@@ -43,6 +43,8 @@ public class SecurityConfig {
                         .access("hasRole('ROLE_ADMIN')")
                         .anyRequest().permitAll())
                 .build();
+
+
     }
 
     public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {

@@ -1,18 +1,15 @@
 package com.oneday.api.service;
 
 import com.oneday.api.model.Product;
-import com.oneday.api.model.Shop;
 import com.oneday.api.model.base.ProductCategory;
 import com.oneday.api.model.dto.ProductRegisterDto;
 import com.oneday.api.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
