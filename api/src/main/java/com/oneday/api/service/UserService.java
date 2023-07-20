@@ -2,6 +2,7 @@ package com.oneday.api.service;
 
 import com.oneday.api.model.User;
 import com.oneday.api.model.dto.UserDto;
+import com.oneday.api.model.dto.UserReadDto;
 import com.oneday.api.repository.UserCustomRepository;
 import com.oneday.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +34,10 @@ public class UserService {
         return byId;
     }
 
+    public void updateLastLogin(Long userId, LocalDateTime time) {
+        userRepository.updateLastLogin(userId, time);
+    }
+
     public Optional<User> findById(Long id) {
         Optional<User> byId = userRepository.findById(id);
         return byId;
@@ -44,8 +50,14 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Page<UserDto> findAll(Pageable pageable) {
-        return userCustomRepository.findAll(pageable);
+    public Map<String, Object> findAll(Pageable pageable) {
+        Page<UserReadDto> pageObject = userCustomRepository.findAll(pageable);
+
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        result.put("users",pageObject.getContent());
+        result.put("totalItem", pageObject.getTotalElements());
+
+        return result;
     }
 
     public List countAllByCreatedDtBetween() {

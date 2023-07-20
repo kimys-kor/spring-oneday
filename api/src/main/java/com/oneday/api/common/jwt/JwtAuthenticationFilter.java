@@ -69,11 +69,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Authentication authentication =
                 authenticationManager.authenticate(authenticationToken);
 
-        PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
-
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        userRepository.updateLastLogin(principalDetailis.getUser().getId(), currentDateTime);
-
         return authentication;
     }
 

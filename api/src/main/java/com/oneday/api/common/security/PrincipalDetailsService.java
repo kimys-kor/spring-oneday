@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 // 시큐리티 설정에서 loginProcessingUrl("/login")을 설정했기 때문에 login요청이 오면 자동으로 loadUserByUsername가 실행됨
 @Component
 @RequiredArgsConstructor
@@ -18,7 +20,12 @@ public class PrincipalDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         System.out.println("loaduser실행");
-        User findOne = userService.findByEmail(email);
-        return new PrincipalDetails(findOne);
+        User user = userService.findByEmail(email);
+        
+        // 마지막로그인 업데이트
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        userService.updateLastLogin(user.getId(), currentDateTime);
+        
+        return new PrincipalDetails(user);
     }
 }

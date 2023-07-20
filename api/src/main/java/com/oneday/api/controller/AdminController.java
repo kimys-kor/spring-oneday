@@ -115,8 +115,8 @@ public class AdminController {
     @GetMapping(value = "/user/findall")
     public Response<Object> findAllUser(Pageable pageable
     ) {
-        Page<UserDto> all = userService.findAll(pageable);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,all);
+        Map<String, Object> all = userService.findAll(pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, all);
     }
 
     // 유저 상세

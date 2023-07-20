@@ -40,7 +40,7 @@ public class UserController {
     private final OrdersCancleService ordersCancleService;
     private final UserBasketProductService userBasketProductService;
     private final UserShopCouponService userShopCouponService;
-    private final UserAddresService userAddresService;
+
 
 
 
