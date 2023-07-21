@@ -1,6 +1,7 @@
 package com.oneday.api.model;
 
 import com.oneday.api.model.base.BaseTime;
+import com.oneday.api.model.base.UserGrade;
 import com.oneday.api.model.base.UserRole;
 import com.oneday.api.model.base.UserStatus;
 import jakarta.persistence.*;
@@ -34,6 +35,10 @@ public class User extends BaseTime {
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private UserGrade grade = UserGrade.BRONZE;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;

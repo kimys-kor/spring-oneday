@@ -26,6 +26,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath email = createString("email");
 
+    public final EnumPath<com.oneday.api.model.base.UserGrade> grade = createEnum("grade", com.oneday.api.model.base.UserGrade.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final DateTimePath<java.time.LocalDateTime> lastLogin = createDateTime("lastLogin", java.time.LocalDateTime.class);

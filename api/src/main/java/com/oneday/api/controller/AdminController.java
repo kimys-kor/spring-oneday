@@ -124,8 +124,8 @@ public class AdminController {
     public Response<Object> findOneUser(
             @RequestParam Long userId
     ) {
-        User byId = userService.findById(userId).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다 ㅠ"));
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,byId);
+        Map<String, Object> userInfo = userService.findById(userId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,userInfo);
     }
 
 

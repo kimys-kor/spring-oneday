@@ -1,6 +1,8 @@
 package com.oneday.api.service;
 
 import com.oneday.api.model.User;
+import com.oneday.api.model.UserMemo;
+import com.oneday.api.model.dto.UserDetailDto;
 import com.oneday.api.model.dto.UserDto;
 import com.oneday.api.model.dto.UserReadDto;
 import com.oneday.api.repository.UserCustomRepository;
@@ -29,6 +31,8 @@ public class UserService {
 
     private final UserCustomRepository userCustomRepository;
 
+    private final UserMemoService userMemoService;
+
     public User findByEmail(String email) {
         User byId = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
         return byId;
@@ -38,9 +42,14 @@ public class UserService {
         userRepository.updateLastLogin(userId, time);
     }
 
-    public Optional<User> findById(Long id) {
-        Optional<User> byId = userRepository.findById(id);
-        return byId;
+    public Map<String,Object> findById(Long userId) {
+        UserDetailDto userDetailDto = userCustomRepository.findById(userId);
+        List<UserMemo> userMemoList = userMemoService.findByUserId(userId);
+
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        result.put("userDetail", userDetailDto);
+        result.put("userMemoList", userMemoList);
+        return result;
     }
 
     public void join(UserDto userDto) {
