@@ -6,7 +6,12 @@ import lombok.Data;
 @Data
 public class OrdersReadDto {
 
-    private OrderStatus status;
+    private long ordersId;
+    private OrderStatus orderStatus;
+
+    private String ordersNumber;
+
+
 
     private Long shopId;
 

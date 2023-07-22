@@ -28,6 +28,8 @@ public class QOrders extends EntityPathBase<Orders> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final StringPath ordersNumber = createString("ordersNumber");
+
     public final EnumPath<com.oneday.api.model.base.OrderStatus> orderStatus = createEnum("orderStatus", com.oneday.api.model.base.OrderStatus.class);
 
     public final NumberPath<Integer> price = createNumber("price", Integer.class);

@@ -29,13 +29,14 @@ public class OrdersCustomRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public Page<OrdersReadDto> findAll(String startDt, String endDt, OrderStatus orderStatus, Pageable pageable) {
+    public Page<OrdersReadDto> findAll(Long userId, String startDt, String endDt, OrderStatus orderStatus, Pageable pageable) {
 
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
 
         QueryResults<OrdersReadDto> results = queryFactory.select(Projections.fields(OrdersReadDto.class,
+
                         orders.orderStatus,
                         orders.shopId,
                         orders.userId,
@@ -45,6 +46,7 @@ public class OrdersCustomRepository {
                 ))
                 .from(orders)
                 .where(
+                        userIdFilter(userId),
                         dateIn(startDt,endDt),
                         statusFilter(orderStatus)
                 )
@@ -58,6 +60,12 @@ public class OrdersCustomRepository {
 
         long total = results.getTotal();
         return new PageImpl<>(data, pageable, total);
+    }
+
+    // 유저 아이디 필터
+    private BooleanExpression userIdFilter(Long userId) {
+        if(userId == null) return null;
+        return orders.userId.eq(userId);
     }
 
     // 날짜 필터

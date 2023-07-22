@@ -34,16 +34,6 @@ public abstract class BaseEntity {
     @LastModifiedBy
     private String lastmodifiedBy;
 
-    @PrePersist
-    public void onPrePersist(){
-        this.createdDt = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        this.updatedDt = this.createdDt;
-    }
-
-    @PreUpdate
-    public void onPreUpdate(){
-        this.updatedDt = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-    }
 
 
 }

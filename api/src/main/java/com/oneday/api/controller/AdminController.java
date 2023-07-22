@@ -128,6 +128,29 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,userInfo);
     }
 
+    // 유저주문 상품 통계
+    @GetMapping(value = "/user/findone/userstatistics")
+    public Response<Object> findOneUserStatistics(
+            @RequestParam Long userId
+    ) {
+        Map<String, Object> result = ordersService.findOneUserStatistics(userId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, result);
+    }
+
+    // 유저통합 주문 조회
+    @GetMapping(value = "/user/findone/orderhistory")
+    public Response<Object> findOneUserOrderHistory(
+            @RequestParam Long userId,
+            @RequestParam(required = false) String startDt,
+            @RequestParam(required = false) String endDt,
+            @RequestParam(required = false, defaultValue = "전체") String orderStatus,
+            Pageable pageable
+    ) {
+        OrderStatus status = OrderStatus.of(orderStatus);
+        Map<String, Object> result = ordersService.findUserOrdersHistory(userId, startDt, endDt, status, pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, result );
+    }
+
 
 
     // 상점 등록 (어드민 가입)
@@ -266,6 +289,7 @@ public class AdminController {
             @RequestParam(required = false) OrderStatus orderStatus,
             Pageable pageable
     ) {
+        System.out.println(startDt+"llll");
         Page<OrdersReadDto> all = ordersService.findAll(startDt,endDt,orderStatus,pageable);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,  all);
     }
@@ -292,7 +316,7 @@ public class AdminController {
         if(orders.getOrderStatus() != OrderStatus.WAITING) return new Response(ResultCode.ORDERS_CANNOT_CANCLE);
 
         // 주문 취소 변경
-        Orders updatedOrders = ordersService.updateOrders(ordersId, OrderStatus.CANCLE);
+        Orders updatedOrders = ordersService.updateOrders(ordersId, OrderStatus.CANCEL);
         Map<String, Object> result = new HashMap<>();
         result.put("orders", orders);
 

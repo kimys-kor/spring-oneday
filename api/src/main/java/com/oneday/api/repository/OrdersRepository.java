@@ -36,4 +36,11 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
 
     @Query("SELECT SUM(o.price) FROM Orders o WHERE o.createdDt between :start AND :end")
     Optional<Integer> getTotalAmount(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    Integer countAllByUserIdEquals(Long userId);
+    Integer countAllByUserIdAndOrderStatusEquals(Long userId, OrderStatus orderStatus);
+
+    @Query("SELECT SUM(o.price) FROM Orders o WHERE o.userId = :userId AND o.orderStatus = :orderStatus ")
+    Optional<Integer> getUserOrdersTotal(@Param("userId") Long userId, @Param("orderStatus") OrderStatus orderStatus);
+
 }

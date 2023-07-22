@@ -131,7 +131,7 @@ public class OrdersService {
     }
 
     public Page<OrdersReadDto> findAll(String startDt, String endDt, OrderStatus orderStatus, Pageable pageable) {
-        return ordersCustomRepository.findAll(startDt,endDt,orderStatus,pageable);
+        return ordersCustomRepository.findAll(null,startDt,endDt,orderStatus,pageable);
     }
 
     // 주문 상태 변경
@@ -192,6 +192,9 @@ public class OrdersService {
         }
     }
 
+
+    // 관리자 페이지 관련
+    // 대시보드
     public Integer countAllByOrderStatusEquals(OrderStatus orderStatus) {
         LocalDate today = LocalDate.now();
         LocalDateTime start = today.atStartOfDay();
@@ -243,4 +246,41 @@ public class OrdersService {
         }
         return data;
     }
+
+    // 회원관리 페이지 통합주문내역  주문상품통계
+    public Map<String, Object> findOneUserStatistics(Long userId) {
+        Integer totalOrders = ordersRepository.countAllByUserIdEquals(userId);
+        Integer waiting = ordersRepository.countAllByUserIdAndOrderStatusEquals(userId, OrderStatus.WAITING);
+        Integer complete = ordersRepository.countAllByUserIdAndOrderStatusEquals(userId, OrderStatus.COMPLETE);
+        Integer change = ordersRepository.countAllByUserIdAndOrderStatusEquals(userId, OrderStatus.CHANGE);
+        Integer cancel = ordersRepository.countAllByUserIdAndOrderStatusEquals(userId, OrderStatus.CANCEL);
+        Integer totalPrice = ordersRepository.getUserOrdersTotal(userId, OrderStatus.COMPLETE).orElse(0);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("totalOrders", totalOrders);
+        map.put("waiting", waiting);
+        map.put("complete", complete);
+        map.put("change", change);
+        map.put("cancel", cancel);
+        map.put("totalPrice", totalPrice);
+
+        return map;
+    }
+
+    // 회원관리 페이지 통합주문내역  통합주문조회
+    public Map<String, Object> findUserOrdersHistory(Long userId, String startDt, String endDt,
+                                                     OrderStatus orderStatus, Pageable pageable) {
+
+        Page<OrdersReadDto> pageObject = ordersCustomRepository.findAll(userId, startDt, endDt, orderStatus, pageable);
+        List<OrdersReadDto> content = pageObject.getContent();
+        long totalElements = pageObject.getTotalElements();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("ordersList", content);
+        result.put("totalItem", totalElements);
+        return result;
+    }
+
+
+
 }

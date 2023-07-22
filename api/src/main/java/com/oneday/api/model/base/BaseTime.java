@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseTime {
 
     @CreatedDate
@@ -25,16 +26,6 @@ public abstract class BaseTime {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedDt;
 
-    @PrePersist
-    public void onPrePersist(){
-        this.createdDt = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        this.updatedDt = this.createdDt;
-    }
-
-    @PreUpdate
-    public void onPreUpdate(){
-        this.updatedDt = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-    }
 
 
 }

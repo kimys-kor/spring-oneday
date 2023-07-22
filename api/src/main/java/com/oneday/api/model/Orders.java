@@ -1,5 +1,6 @@
 package com.oneday.api.model;
 
+import com.oneday.api.common.utils.OrderNumberGenerator;
 import com.oneday.api.model.base.BaseTime;
 import com.oneday.api.model.base.OrderStatus;
 import jakarta.persistence.*;
@@ -17,6 +18,9 @@ public class Orders extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Builder.Default
+    private String ordersNumber = OrderNumberGenerator.generateOrderNumber();
 
     private Long shopId;
     private Long userId;
