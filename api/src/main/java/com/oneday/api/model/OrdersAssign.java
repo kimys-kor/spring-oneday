@@ -16,6 +16,7 @@ public class OrdersAssign {
     private Long id;
 
     private Long riderId;
+    private String riderName;
 
     private Long ordersId;
 

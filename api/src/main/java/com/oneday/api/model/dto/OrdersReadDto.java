@@ -3,6 +3,9 @@ package com.oneday.api.model.dto;
 import com.oneday.api.model.base.OrderStatus;
 import lombok.Data;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Data
 public class OrdersReadDto {
 
@@ -11,11 +14,13 @@ public class OrdersReadDto {
 
     private String ordersNumber;
 
+    private String createdDt;
+
 
 
     private Long shopId;
 
-    private Long userId;
+    private String email;
 
     private String address;
 

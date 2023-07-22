@@ -25,6 +25,8 @@ public class QOrdersAssign extends EntityPathBase<OrdersAssign> {
 
     public final NumberPath<Long> riderId = createNumber("riderId", Long.class);
 
+    public final StringPath riderName = createString("riderName");
+
     public QOrdersAssign(String variable) {
         super(OrdersAssign.class, forVariable(variable));
     }

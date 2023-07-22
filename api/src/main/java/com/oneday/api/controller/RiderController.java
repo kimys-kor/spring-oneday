@@ -4,6 +4,7 @@ import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
 import com.oneday.api.model.Orders;
 import com.oneday.api.model.OrdersAssign;
+import com.oneday.api.model.Rider;
 import com.oneday.api.service.OrdersAssignService;
 import com.oneday.api.service.OrdersService;
 import com.oneday.api.service.RiderService;
@@ -33,10 +34,12 @@ public class RiderController {
         Orders orders = ordersService.findById(ordersId);
         if(orders== null) return new Response(ResultCode.ORDERS_NOT_FOUND);
 
+        Rider rider = riderService.findById(riderId);
 
         OrdersAssign ordersAssign = OrdersAssign.builder()
                 .ordersId(ordersId)
                 .riderId(riderId)
+                .riderName(rider.getRiderName())
                 .build();
 
         ordersAssignService.save(ordersAssign);
