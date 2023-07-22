@@ -2,12 +2,10 @@ package com.oneday.api.common.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class OrderNumberGenerator {
-
-    // Atomic integer to ensure thread-safe incrementing of the sequence
-    private static final AtomicInteger sequence = new AtomicInteger(0);
 
     // Format for the date part of the order number
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -17,17 +15,16 @@ public class OrderNumberGenerator {
         // Get the current date
         String datePart = dateFormat.format(new Date());
 
-        // Get the next sequence value and pad it with zeros to make it 4 digits
-        String sequencePart = String.format("%04d", sequence.incrementAndGet());
+        // Generate a random UUID
+        UUID uuid = UUID.randomUUID();
 
-        // Combine the date and sequence parts to form the final order number
-        String orderNumber = datePart + sequencePart;
+        // Get the first 4 characters of the UUID
+        String uuidPart = uuid.toString().substring(0, 4);
+
+        // Combine the date and UUID parts to form the final order number
+        String orderNumber = datePart + uuidPart;
 
         return orderNumber;
     }
 
-    public static void main(String[] args) {
-        // Generate and print the order number
-        System.out.println("Order Number: " + generateOrderNumber());
-    }
 }
