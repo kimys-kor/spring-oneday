@@ -7,12 +7,15 @@ import com.oneday.api.model.dto.UserDto;
 import com.oneday.api.model.dto.UserReadDto;
 import com.oneday.api.repository.UserCustomRepository;
 import com.oneday.api.repository.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,6 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
+    @PersistenceContext
+    EntityManager em;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -91,5 +97,25 @@ public class UserService {
         return data;
     }
 
+    // 유저 비밀번호 업데이트
+    @Transactional
+    public void updatePassword(Long userId) {
+        Random random = new Random();
+        int temp = 0;
+        String tempNum = "";
+        int size    = 6;
+        String resultNum = "";
 
+        for (int i=0; i<size; i++) {
+            temp = random.nextInt(9);
+            tempNum =  Integer.toString(temp);
+            resultNum += tempNum;
+        }
+        String encPassword = bCryptPasswordEncoder.encode(resultNum);
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
+        user.setPassword(encPassword);
+        em.flush();
+        em.clear();
+
+    }
 }

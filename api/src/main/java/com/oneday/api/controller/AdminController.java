@@ -13,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/admin")
@@ -151,7 +148,12 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING, result );
     }
 
-
+    // 유저 임시 비밀번호 생성
+    @GetMapping(value = "/user/password/reset")
+    public Response<Object> userPasswordReset(@RequestParam Long userId) {
+        userService.updatePassword(userId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+    }
 
     // 상점 등록 (어드민 가입)
     @PostMapping(value = "/shop/save/byadmin")
