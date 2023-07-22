@@ -27,6 +27,7 @@ public class AdminController {
     private final RiderService riderService;
     private final OrdersService ordersService;
     private final ComplainService complainService;
+    private final UserMemoService userMemoService;
 
     // 대시보드 주문 상태
     @GetMapping(value = "/dashboard/ordersstatus")
@@ -148,10 +149,36 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING, result );
     }
 
+    // 유저 적립금 추가
+    @GetMapping(value = "/user/add/point")
+    public Response<Object> updateUserPoint(@RequestParam Long userId,
+                                            @RequestParam Integer point) {
+        userService.addPoint(userId, point);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+    }
+
     // 유저 임시 비밀번호 생성
     @GetMapping(value = "/user/password/reset")
     public Response<Object> userPasswordReset(@RequestParam Long userId) {
         userService.updatePassword(userId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+    }
+
+    // 유저 정보 업데이트
+    @PostMapping(value = "/user/update/info")
+    public Response<Object> updateUserInfo(@RequestParam Long userId,
+                                           @RequestParam String userNickname,
+                                           @RequestParam String userGrade) {
+        userService.updateInfo(userId, userNickname, userGrade);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+    }
+
+    // 유저 메모 저장
+    @PostMapping(value = "/user/save/memo")
+    public Response<Object> saveUserMemo(@RequestParam Long userId,
+                                           @RequestParam String content) {
+
+        userMemoService.save(userId, content);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 

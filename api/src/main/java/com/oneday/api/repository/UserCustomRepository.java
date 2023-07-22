@@ -2,6 +2,7 @@ package com.oneday.api.repository;
 
 
 import com.oneday.api.model.QUser;
+import com.oneday.api.model.base.UserStatus;
 import com.oneday.api.model.dto.UserDetailDto;
 import com.oneday.api.model.dto.UserReadDto;
 import com.querydsl.core.QueryResults;
@@ -43,7 +44,8 @@ public class UserCustomRepository {
                 ))
                 .from(user)
                 .where(
-                        user.role.eq(ROLE_USER)
+                        user.role.eq(ROLE_USER),
+                        user.status.ne(UserStatus.INACTIVE)
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

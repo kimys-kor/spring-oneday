@@ -2,6 +2,7 @@ package com.oneday.api.service;
 
 import com.oneday.api.model.User;
 import com.oneday.api.model.UserMemo;
+import com.oneday.api.model.base.UserGrade;
 import com.oneday.api.model.dto.UserDetailDto;
 import com.oneday.api.model.dto.UserDto;
 import com.oneday.api.model.dto.UserReadDto;
@@ -114,6 +115,27 @@ public class UserService {
         String encPassword = bCryptPasswordEncoder.encode(resultNum);
         User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
         user.setPassword(encPassword);
+        em.flush();
+        em.clear();
+    }
+
+    // 유저 포인트 추가
+    @Transactional
+    public void addPoint(Long userId, Integer point) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
+        user.setPoint(user.getPoint()+point);
+        em.flush();
+        em.clear();
+    }
+
+    // 유저 정보 수정
+    @Transactional
+    public void updateInfo(Long userId, String userNickname, String userGrade) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
+        UserGrade grade = UserGrade.of(userGrade);
+
+        user.setNickname(userNickname);
+        user.setGrade(grade);
         em.flush();
         em.clear();
 
