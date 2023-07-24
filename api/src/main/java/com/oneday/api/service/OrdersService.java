@@ -302,7 +302,7 @@ public class OrdersService {
 
     // 상점관리 페이지 통합주문내역
     public Map<String, Object> findShopStatistics(Long shopId) {
-        Integer totalOrders = ordersRepository.countAllByUserIdEquals(shopId);
+        Integer totalOrders = ordersRepository.countAllByShopIdEquals(shopId);
         Integer waiting = ordersRepository.countAllByShopIdAndOrderStatusEquals(shopId, OrderStatus.WAITING);
         Integer complete = ordersRepository.countAllByShopIdAndOrderStatusEquals(shopId, OrderStatus.COMPLETE);
         Integer change = ordersRepository.countAllByShopIdAndOrderStatusEquals(shopId, OrderStatus.CHANGE);
@@ -334,6 +334,36 @@ public class OrdersService {
         return result;
     }
 
+    // 라이더관리 페이지 배달수행정보  수행내역 통계
+    public Map<String, Object> findRiderStatistics(Long riderId) {
+        Integer totalOrders = ordersRepository.countAllByRiderIdEquals(riderId);
+        Integer waiting = ordersRepository.countAllByRiderIdAndOrderStatusEquals(riderId, OrderStatus.WAITING);
+        Integer complete = ordersRepository.countAllByRiderIdAndOrderStatusEquals(riderId, OrderStatus.COMPLETE);
+        Integer change = ordersRepository.countAllByRiderIdAndOrderStatusEquals(riderId, OrderStatus.CHANGE);
+        Integer cancel = ordersRepository.countAllByRiderIdAndOrderStatusEquals(riderId, OrderStatus.CANCEL);
+        Integer totalPrice = ordersRepository.getRiderOrdersTotal(riderId, OrderStatus.COMPLETE).orElse(0);
 
+        Map<String, Object> map = new HashMap<>();
+        map.put("totalOrders", totalOrders);
+        map.put("waiting", waiting);
+        map.put("complete", complete);
+        map.put("change", change);
+        map.put("cancel", cancel);
+        map.put("totalPrice", totalPrice);
 
+        return map;
+    }
+
+    // 라이더 관리 페이지 배달 수행정보
+    public Map<String, Object> findRiderOrdersHistory(Long shopId, String startDt, String endDt,
+                                                      OrderStatus orderStatus, Pageable pageable) {
+        Page<OrdersReadDto> pageObject = ordersCustomRepository.findAllByRiderId(shopId, startDt, endDt, orderStatus, pageable);
+        List<OrdersReadDto> content = pageObject.getContent();
+        long totalElements = pageObject.getTotalElements();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("ordersList", content);
+        result.put("totalItem", totalElements);
+        return result;
+    }
 }

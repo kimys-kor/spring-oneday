@@ -214,8 +214,8 @@ public class AdminController {
     }
 
     // 상점 상세 페이지 통합주문내역
-    @GetMapping(value = "/shop/orders/history")
-    public Response<Object> getShopOrderHistory(
+    @GetMapping(value = "/shop/orders/statistics")
+    public Response<Object> getShopOrderStatistics(
             @RequestParam Long shopId
     ) {
         Map<String, Object> result = ordersService.findShopStatistics(shopId);
@@ -278,12 +278,36 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING, result);
     }
 
-    // 라이더 상세정보
+    // 라이더 상세 페이지
     @GetMapping(value = "/rider/findone")
-    public Response<Object> findAllRider(
+    public Response<Object> findRiderDetail(
             Long riderId
     ) {
         Map<String, Object> rider = riderService.findByIdForAdmin(riderId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  rider);
+    }
+
+    // 라이더 상세 페이지 통합주문내역
+    @GetMapping(value = "/rider/orders/statistics")
+    public Response<Object> getRiderOrderStatistics(
+            @RequestParam Long riderId
+    ) {
+        Map<String, Object> result = ordersService.findRiderStatistics(riderId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, result);
+    }
+
+
+    // 라이더 통합 주문 조회
+    @GetMapping(value = "/rider/orders/list")
+    public Response<Object> findRiderOrders(
+            @RequestParam Long riderId,
+            @RequestParam(required = false) String startDt,
+            @RequestParam(required = false) String endDt,
+            @RequestParam(required = false, defaultValue = "all") String orderStatus,
+            Pageable pageable
+    ) {
+        OrderStatus status = OrderStatus.of(orderStatus);
+        Map<String, Object> rider = ordersService.findRiderOrdersHistory(riderId,startDt, endDt, status, pageable);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,  rider);
     }
 

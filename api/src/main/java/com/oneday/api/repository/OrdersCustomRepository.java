@@ -123,6 +123,49 @@ public class OrdersCustomRepository {
         return new PageImpl<>(data, pageable, total);
     }
 
+    public Page<OrdersReadDto> findAllByRiderId(Long riderId, String startDt, String endDt, OrderStatus orderStatus, Pageable pageable) {
+
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        StringExpression formattedDate = Expressions.stringTemplate(
+                "DATE_FORMAT({0}, {1})"
+                , orders.createdDt
+                , ConstantImpl.create("%Y.%m.%d %H:%i:%s")).as("createdDt");
+
+
+        QueryResults<OrdersReadDto> results = queryFactory.select(Projections.fields(OrdersReadDto.class,
+                        orders.id,
+                        orders.orderStatus,
+                        orders.ordersNumber,
+                        formattedDate,
+                        orders.shopId,
+                        user.email,
+                        userAddress.address,
+                        userAddress.zonecode,
+                        orders.price,
+                        orders.shipPrice
+                ))
+                .from(orders)
+                .leftJoin(userAddress).on(userAddress.id.eq(orders.userAddresId))
+                .leftJoin(user).on(user.id.eq(orders.userId))
+                .where(
+                        orders.riderId.eq(riderId),
+                        dateIn(startDt,endDt),
+                        statusFilter(orderStatus)
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+
+        List<OrdersReadDto> data = results.getResults();
+
+
+        long total = results.getTotal();
+        return new PageImpl<>(data, pageable, total);
+    }
+
 
     // 유저 아이디 필터
     private BooleanExpression userIdFilter(Long userId) {
