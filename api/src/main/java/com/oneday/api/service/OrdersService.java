@@ -6,10 +6,13 @@ import com.oneday.api.model.dto.OrdersDto;
 import com.oneday.api.model.dto.OrdersReadDto;
 import com.oneday.api.repository.OrdersCustomRepository;
 import com.oneday.api.repository.OrdersRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,6 +27,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OrdersService {
 
+    @PersistenceContext
+    EntityManager em;
     private final OrdersRepository ordersRepository;
     private final OrdersProductService ordersProductService;
     private final OrdersProductOptionService ordersProductOptionService;
@@ -136,10 +141,23 @@ public class OrdersService {
     }
 
     // 주문 상태 변경
+    @Transactional
     public Orders updateOrders(Long ordersId, OrderStatus orderStatus) {
-        Orders byId = findById(ordersId);
-        byId.setOrderStatus(orderStatus);
-        return ordersRepository.save(byId);
+        Orders orders = findById(ordersId);
+        orders.setOrderStatus(orderStatus);
+        em.flush();
+        em.clear();
+        return orders;
+    }
+
+    // 라이더 배정
+    @Transactional
+    public Orders updateRiders(Long ordersId, Long riderId) {
+        Orders orders = findById(ordersId);
+        orders.setRiderId(riderId);
+        em.flush();
+        em.clear();
+        return orders;
     }
 
     // 가격 계산

@@ -35,6 +35,8 @@ public class Orders extends BaseTime {
 
     private Long shopCouponId;
 
+    private Long riderId;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 

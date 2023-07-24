@@ -10,10 +10,10 @@ import com.oneday.api.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+
 
 @RestController
 @RequestMapping("/admin")
@@ -257,9 +257,6 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING, result );
     }
 
-
-
-
     // 상점 삭제 (상품 모두 삭제, 상품의 옵션들 모두삭제)
     @GetMapping(value = "/shop/delete")
     public Response<Object> deleteShop(
@@ -272,6 +269,54 @@ public class AdminController {
         shopService.delete(byId);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING, byId);
     }
+
+    // 라이더 리스트
+    @GetMapping(value = "/rider/findall")
+    public Response<Object> findAllRider(Pageable pageable
+    ) {
+        Map<String, Object> result = riderService.findAll(pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, result);
+    }
+
+    // 라이더 상세정보
+    @GetMapping(value = "/rider/findone")
+    public Response<Object> findAllRider(
+            Long riderId
+    ) {
+        Map<String, Object> rider = riderService.findByIdForAdmin(riderId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  rider);
+    }
+
+    // 라이더 등록
+    @PostMapping(value = "/riders/save")
+    public Response<Object> ridersSave(
+            RiderRegisterDto dto
+    ) {
+        Rider save = riderService.save(dto);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  save);
+    }
+
+    // 라이더 수정
+    @PostMapping(value = "/riders/update")
+    public Response<Object> ridersSave(
+            Long riderId,
+            RiderRegisterDto dto
+    ) {
+        Rider updateRider = riderService.update(riderId,dto);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  updateRider);
+    }
+
+
+    // 라이더 삭제
+    @GetMapping(value = "/rider/delete")
+    public Response<Object> deleteRider(
+            Long riderId
+    ) {
+        riderService.delete(riderId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+    }
+    
+
 
     // 상품 추가
     @PostMapping(value = "/product/save")
@@ -402,51 +447,7 @@ public class AdminController {
 
     // 가게
 
-    // 라이더 등록
-    @PostMapping(value = "/riders/save")
-    public Response<Object> ridersSave(
-            RiderRegisterDto dto
-    ) {
-        Rider save = riderService.save(dto);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  save);
-    }
 
-    // 라이더 수정
-    @PostMapping(value = "/riders/update")
-    public Response<Object> ridersSave(
-            Long riderId,
-            RiderRegisterDto dto
-    ) {
-        Rider updateRider = riderService.update(riderId,dto);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  updateRider);
-    }
-
-    // 라이더 리스트
-    @GetMapping(value = "/rider/findall")
-    public Response<Object> findAllRider(
-            Pageable pageable
-    ) {
-        Page<RiderReadDto> all = riderService.findAll(pageable);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  all);
-    }
-
-    // 라이더 상세정보
-    @GetMapping(value = "/rider/findone")
-    public Response<Object> findAllRider(
-            Long riderId
-    ) {
-        Rider byId = riderService.findById(riderId);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING,  byId);
-    }
-
-    // 라이더 삭제
-    @GetMapping(value = "/rider/delete")
-    public Response<Object> deleteRider(
-            Long riderId
-    ) {
-        riderService.delete(riderId);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
-    }
 
 
 

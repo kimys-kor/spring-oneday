@@ -3,14 +3,17 @@ package com.oneday.api.service;
 import com.oneday.api.model.*;
 import com.oneday.api.model.base.OrderStatus;
 import com.oneday.api.model.base.UserStatus;
-import com.oneday.api.model.dto.RiderReadDto;
-import com.oneday.api.model.dto.RiderRegisterDto;
+import com.oneday.api.model.dto.*;
 import com.oneday.api.repository.RiderCustomRepository;
 import com.oneday.api.repository.RiderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +39,29 @@ public class RiderService {
     }
 
 
-    public Page<RiderReadDto> findAll(Pageable pageable) {
-        return riderCustomRepository.findAll(pageable);
+    public Map<String, Object> findAll(Pageable pageable) {
+        Page<RiderReadDto> pageObject = riderCustomRepository.findAll(pageable);
+
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        result.put("rider",pageObject.getContent());
+        result.put("totalItem", pageObject.getTotalElements());
+
+        return result;
     }
+
+
 
     public Rider findById(Long riderId) {
         return riderRepository.findById(riderId).orElse(null);
+    }
+
+    public Map<String,Object> findByIdForAdmin(Long riderId) {
+        RiderDetailDto rider = riderCustomRepository.findOne(riderId);
+
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        result.put("rider", rider);
+
+        return result;
     }
 
     public void delete(Long riderId) {

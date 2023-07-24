@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class RiderReadDto {
+public class RiderDetailDto {
 
     private Long id;
 
@@ -18,4 +18,8 @@ public class RiderReadDto {
 
     private UserStatus status;
 
+    private Long complete;
+    private Integer completePrice;
+
+    private String lastComplete;
 }

@@ -3,9 +3,7 @@ package com.oneday.api.controller;
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
 import com.oneday.api.model.Orders;
-import com.oneday.api.model.OrdersAssign;
 import com.oneday.api.model.Rider;
-import com.oneday.api.service.OrdersAssignService;
 import com.oneday.api.service.OrdersService;
 import com.oneday.api.service.RiderService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +19,6 @@ public class RiderController {
 
     private final RiderService riderService;
     private final OrdersService ordersService;
-    private final OrdersAssignService ordersAssignService;
 
 
     // 라이더 주문 배정
@@ -34,16 +31,9 @@ public class RiderController {
         Orders orders = ordersService.findById(ordersId);
         if(orders== null) return new Response(ResultCode.ORDERS_NOT_FOUND);
 
-        Rider rider = riderService.findById(riderId);
+        Orders updateOrders = ordersService.updateRiders(ordersId, riderId);
 
-        OrdersAssign ordersAssign = OrdersAssign.builder()
-                .ordersId(ordersId)
-                .riderId(riderId)
-                .riderName(rider.getRiderName())
-                .build();
-
-        ordersAssignService.save(ordersAssign);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,updateOrders);
     }
 
     // 라이더 배달 완료

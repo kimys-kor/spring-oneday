@@ -44,11 +44,11 @@ public class ProductOptionService {
     }
 
     public ProductOption update(Long productOptionId, String name, int price) {
-        ProductOption byId = findById(productOptionId).orElse(null);
-        byId.setProductId(productOptionId);
-        byId.setName(name);
-        byId.setPrice(price);
-        return productOptionRepository.save(byId);
+        ProductOption option = findById(productOptionId).orElse(null);
+        option.setProductId(productOptionId);
+        option.setName(name);
+        option.setPrice(price);
+        return productOptionRepository.save(option);
     }
 
     // productId 리스트로 해당 상품옵션들 삭제
