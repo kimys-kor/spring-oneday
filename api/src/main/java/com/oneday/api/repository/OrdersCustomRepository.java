@@ -37,7 +37,7 @@ public class OrdersCustomRepository {
     //데이터 포맷 변경
 
 
-    public Page<OrdersReadDto> findAll(Long userId, String startDt, String endDt, OrderStatus orderStatus, Pageable pageable) {
+    public Page<OrdersReadDto> findAllByUserId(Long userId, String startDt, String endDt, OrderStatus orderStatus, Pageable pageable) {
 
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
@@ -80,6 +80,50 @@ public class OrdersCustomRepository {
         return new PageImpl<>(data, pageable, total);
     }
 
+    public Page<OrdersReadDto> findAllByShopId(Long shopId, String startDt, String endDt, OrderStatus orderStatus, Pageable pageable) {
+
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        StringExpression formattedDate = Expressions.stringTemplate(
+                "DATE_FORMAT({0}, {1})"
+                , orders.createdDt
+                , ConstantImpl.create("%Y.%m.%d %H:%i:%s")).as("createdDt");
+
+
+        QueryResults<OrdersReadDto> results = queryFactory.select(Projections.fields(OrdersReadDto.class,
+                        orders.id,
+                        orders.orderStatus,
+                        orders.ordersNumber,
+                        formattedDate,
+                        orders.shopId,
+                        user.email,
+                        userAddress.address,
+                        userAddress.zonecode,
+                        orders.price,
+                        orders.shipPrice
+                ))
+                .from(orders)
+                .leftJoin(userAddress).on(userAddress.id.eq(orders.userAddresId))
+                .leftJoin(user).on(user.id.eq(orders.userId))
+                .where(
+                        orders.shopId.eq(shopId),
+                        dateIn(startDt,endDt),
+                        statusFilter(orderStatus)
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+
+        List<OrdersReadDto> data = results.getResults();
+
+
+        long total = results.getTotal();
+        return new PageImpl<>(data, pageable, total);
+    }
+
+
     // 유저 아이디 필터
     private BooleanExpression userIdFilter(Long userId) {
         if(userId == null) return null;
@@ -102,7 +146,7 @@ public class OrdersCustomRepository {
     }
 
     private BooleanExpression statusFilter(OrderStatus orderStatus) {
-        if (StringUtils.isEmpty(orderStatus)) {
+        if (orderStatus.equals(OrderStatus.All) ) {
             return null;
         }
         return orders.orderStatus.eq(orderStatus);

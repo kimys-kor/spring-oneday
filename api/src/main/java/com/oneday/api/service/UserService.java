@@ -49,6 +49,18 @@ public class UserService {
         userRepository.updateLastLogin(userId, time);
     }
 
+    // 관리자 페이지 유저 리스트
+    public Map<String, Object> findAll(Pageable pageable) {
+        Page<UserReadDto> pageObject = userCustomRepository.findAll(pageable);
+
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        result.put("users",pageObject.getContent());
+        result.put("totalItem", pageObject.getTotalElements());
+
+        return result;
+    }
+
+    // 관리자 페이지 유저 상세
     public Map<String,Object> findById(Long userId) {
         UserDetailDto userDetailDto = userCustomRepository.findById(userId);
         List<UserMemo> userMemoList = userMemoService.findByUserId(userId);
@@ -66,15 +78,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Map<String, Object> findAll(Pageable pageable) {
-        Page<UserReadDto> pageObject = userCustomRepository.findAll(pageable);
-
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        result.put("users",pageObject.getContent());
-        result.put("totalItem", pageObject.getTotalElements());
-
-        return result;
-    }
+    
 
     public List countAllByCreatedDtBetween() {
         LocalDate today = LocalDate.now();
@@ -100,7 +104,7 @@ public class UserService {
 
     // 유저 비밀번호 업데이트
     @Transactional
-    public void updatePassword(Long userId) {
+    public String updatePassword(Long userId) {
         Random random = new Random();
         int temp = 0;
         String tempNum = "";
@@ -117,6 +121,7 @@ public class UserService {
         user.setPassword(encPassword);
         em.flush();
         em.clear();
+        return resultNum;
     }
 
     // 유저 포인트 추가

@@ -6,7 +6,10 @@ import com.oneday.api.model.base.UserStatus;
 import com.oneday.api.model.dto.UserDetailDto;
 import com.oneday.api.model.dto.UserReadDto;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.oneday.api.model.QOrders.orders;
 import static com.oneday.api.model.QUser.user;
 import static com.oneday.api.model.base.UserRole.ROLE_USER;
 
@@ -31,6 +35,16 @@ public class UserCustomRepository {
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
+        StringExpression cratedDt = Expressions.stringTemplate(
+                "DATE_FORMAT({0}, {1})"
+                , user.createdDt
+                , ConstantImpl.create("%Y.%m.%d %H:%i:%s")).as("createdDt");
+
+        StringExpression lastLogin = Expressions.stringTemplate(
+                "DATE_FORMAT({0}, {1})"
+                , user.lastLogin
+                , ConstantImpl.create("%Y.%m.%d %H:%i:%s")).as("lastLogin");
+
 
         QueryResults<UserReadDto> results = queryFactory.select(Projections.fields(UserReadDto.class,
                         user.status,
@@ -38,8 +52,8 @@ public class UserCustomRepository {
                         user.phoneNum,
                         user.email,
                         user.nickname,
-                        user.createdDt,
-                        user.lastLogin,
+                        cratedDt,
+                        lastLogin,
                         user.point
                 ))
                 .from(user)
@@ -64,6 +78,16 @@ public class UserCustomRepository {
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
+        StringExpression cratedDt = Expressions.stringTemplate(
+                "DATE_FORMAT({0}, {1})"
+                , user.createdDt
+                , ConstantImpl.create("%Y.%m.%d %H:%i:%s")).as("createdDt");
+
+        StringExpression lastLogin = Expressions.stringTemplate(
+                "DATE_FORMAT({0}, {1})"
+                , user.lastLogin
+                , ConstantImpl.create("%Y.%m.%d %H:%i:%s")).as("lastLogin");
+
 
         UserDetailDto userDetailDto = queryFactory.select(Projections.fields(UserDetailDto.class,
                         user.id,
@@ -71,8 +95,8 @@ public class UserCustomRepository {
                         user.grade,
                         user.point,
                         user.email,
-                        user.createdDt,
-                        user.lastLogin,
+                        cratedDt,
+                        lastLogin,
                         user.phoneNum
                 ))
                 .from(user)

@@ -21,14 +21,14 @@ import java.time.format.DateTimeFormatter;
 public abstract class BaseEntity {
 
     @CreatedDate
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy.MM.dd HH:mm:ss")
     private LocalDateTime createdDt;
 
     @CreatedBy
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdBy;
 
     @LastModifiedDate
+    @JsonFormat(pattern = "yyyy.MM.dd HH:mm:ss")
     private LocalDateTime updatedDt;
 
     @LastModifiedBy

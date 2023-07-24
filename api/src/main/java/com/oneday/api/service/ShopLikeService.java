@@ -11,6 +11,7 @@ public class ShopLikeService {
 
     private final ShopLikeRpository shopLikeRepository;
 
+
     public void save(Long shopId, Long userId) {
         ShopLike findBy = findByShopIdAndUserIdEquals(shopId, userId);
 

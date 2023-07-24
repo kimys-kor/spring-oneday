@@ -13,7 +13,7 @@ public class UserReadDto {
     private String phoneNum;
     private String email;
     private String nickname;
-    private LocalDateTime createdDt;
-    private LocalDateTime lastLogin;
+    private String createdDt;
+    private String lastLogin;
     private int point;
 }

@@ -1,9 +1,6 @@
 package com.oneday.api.service;
 
-import com.oneday.api.model.ImgFile;
-import com.oneday.api.model.Product;
-import com.oneday.api.model.Shop;
-import com.oneday.api.model.ShopLike;
+import com.oneday.api.model.*;
 import com.oneday.api.model.dto.ShopReadDto;
 import com.oneday.api.model.dto.ShopRegisterDto;
 import com.oneday.api.repository.ShopCustomRepository;
@@ -23,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,7 +78,33 @@ public class ShopService {
         return shopRepository.save(byId);
     }
 
-    // 상점 리스트
+    // 관리자 페이지 상점 리스트
+    public Map<String, Object> findShopListForAdmin(String orderCondition, String address, String keyword, Pageable pageable) {
+        Page<ShopReadDto> pageObject = shopCustomRepository.findShopListForAdmin(orderCondition, address, keyword, pageable);
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        result.put("shopList",pageObject.getContent());
+        result.put("totalItem", pageObject.getTotalElements());
+
+        return result;
+    }
+
+    // 관리자 페이지 상점상세
+    public Map<String,Object> getShopDetail(Long shopId) {
+        ShopReadDto shop = shopCustomRepository.findById(shopId);
+
+        List<ShopReview> shopReviewList = shopReviewService.findAllByShopIdEquals(shopId);
+
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        result.put("shopDetail", shop);
+        result.put("shopReviewList", shopReviewList);
+
+        return result;
+    }
+
+
+
+
+    // 유저 페이지 상점 리스트
     public Page<ShopReadDto> findShopList(Long userId, BigDecimal lat, BigDecimal lon, String orderCondition,
                                           Integer distance, String keyword, Pageable pageable) {
 
@@ -92,8 +116,6 @@ public class ShopService {
             if(aFloat == null) aFloat = 0.0F;
 
             shop.setAvgStar(aFloat);
-            shop.setPeoples(cntConversion(shop.getPp()));
-            shop.setReviewNumber(cntConversion(Long.valueOf(shop.getRn())));
 
             ShopLike shopLike = null;
             if(userId != null) shopLike = shopLikeService.findByShopIdAndUserIdEquals(shop.getId(), userId);
@@ -105,17 +127,18 @@ public class ShopService {
         }
         return shopList;
     }
-
-
+    
     public Shop findById(Long shopId) {
         return shopRepository.findById(shopId).orElse(null);
     }
+
+
 
     // 상점 삭제
     public void delete(Shop shop) {
         shopRepository.delete(shop);
         // 상점의 상품도 삭제
-        List<Product> productList = productService.findAllByShopIdEquals(shop.getId());
+        List<Product> productList = productService.findAllByShopIdEqualsForDelete(shop.getId());
         productService.deleteAll(productList);
         List<Long> productIdList = productList.stream()
                 .map(Product::getId)
@@ -124,24 +147,6 @@ public class ShopService {
         productOptionService.deleteAll(productIdList);
     }
 
-    // k 변환
-    public String cntConversion(Long cnt) {
-        String k = "";
-        // 추천 수
-        if (cnt >= 1000) {
-            Long i = cnt / 1000;
-            String s = String.valueOf(cnt % 1000).substring(0, 1);
-            if (s.equals("0")) {
-                k = i + "k";
-            } else {
-                k = i + "." + s + "k";
-            }
-        } else {
-            k = String.valueOf(cnt);
-        }
-
-        return k;
-    }
 
 
     private List<String> saveImg(ShopRegisterDto dto) {
@@ -195,6 +200,9 @@ public class ShopService {
 
         return filePathList;
     }
+
+
+
 
 
 }

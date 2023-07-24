@@ -14,13 +14,14 @@ public class ShopReadDto {
     private String name;
     // 대표자
     private String ownerName;
-    private Integer rn;
-    private String reviewNumber;
+    private Integer reviewNum;
 
     // 사업자번호
     private String businessNumber;
     // 연락처
     private String contactNumber;
+    private String createdDt;
+
     // 주소
     private String shopAddress;
     // 매장소개
@@ -36,13 +37,10 @@ public class ShopReadDto {
     private BigDecimal lat;
     private BigDecimal lon;
     private BigDecimal distance;
+    private Integer sales;
 
     private Float avgStar;
     private boolean isLike;
 
-    private Integer sales;
-
-    private Long pp;
-    private String peoples;
 
 }

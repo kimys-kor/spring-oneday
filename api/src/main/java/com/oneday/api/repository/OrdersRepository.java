@@ -39,8 +39,12 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
 
     Integer countAllByUserIdEquals(Long userId);
     Integer countAllByUserIdAndOrderStatusEquals(Long userId, OrderStatus orderStatus);
+    Integer countAllByShopIdAndOrderStatusEquals(Long shopId, OrderStatus orderStatus);
 
     @Query("SELECT SUM(o.price) FROM Orders o WHERE o.userId = :userId AND o.orderStatus = :orderStatus ")
     Optional<Integer> getUserOrdersTotal(@Param("userId") Long userId, @Param("orderStatus") OrderStatus orderStatus);
+
+    @Query("SELECT SUM(o.price) FROM Orders o WHERE o.shopId = :shopId AND o.orderStatus = :orderStatus ")
+    Optional<Integer> getShopOrdersTotal(@Param("shopId") Long shopId, @Param("orderStatus") OrderStatus orderStatus);
 
 }

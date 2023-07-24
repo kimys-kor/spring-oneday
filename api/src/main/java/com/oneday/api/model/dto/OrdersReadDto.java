@@ -16,8 +16,6 @@ public class OrdersReadDto {
 
     private String createdDt;
 
-
-
     private Long shopId;
 
     private String email;

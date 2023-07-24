@@ -24,11 +24,12 @@ public class Shop extends BaseTime {
 
     private String ownerName;
 
+    // 연락처
+    private String contactNumber;
+
     // 사업자번호
     private String businessNumber;
 
-    // 연락처
-    private String contactNumber;
 
     // 주소
     private String shopAddress;

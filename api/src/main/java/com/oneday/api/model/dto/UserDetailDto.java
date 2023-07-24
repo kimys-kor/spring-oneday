@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.oneday.api.model.base.UserGrade;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 
 @Data
 public class UserDetailDto {
@@ -14,9 +13,9 @@ public class UserDetailDto {
     private int point;
     private String email;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdDt;
+    private String createdDt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime lastLogin;
+    private String lastLogin;
     private String phoneNum;
 
 }

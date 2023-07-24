@@ -141,7 +141,7 @@ public class AdminController {
             @RequestParam Long userId,
             @RequestParam(required = false) String startDt,
             @RequestParam(required = false) String endDt,
-            @RequestParam(required = false, defaultValue = "전체") String orderStatus,
+            @RequestParam(required = false, defaultValue = "all") String orderStatus,
             Pageable pageable
     ) {
         OrderStatus status = OrderStatus.of(orderStatus);
@@ -160,8 +160,8 @@ public class AdminController {
     // 유저 임시 비밀번호 생성
     @GetMapping(value = "/user/password/reset")
     public Response<Object> userPasswordReset(@RequestParam Long userId) {
-        userService.updatePassword(userId);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+        String tempPassword = userService.updatePassword(userId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING,tempPassword);
     }
 
     // 유저 정보 업데이트
@@ -182,15 +182,25 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 
-    // 상점 등록 (어드민 가입)
-    @PostMapping(value = "/shop/save/byadmin")
-    public Response<Map<String, Object>> saveShopByAdmin(
-            long userId,
-            ShopRegisterDto shopRegisterDto
+    // 상점 리스트
+    @GetMapping(value = "/shop/findall")
+    public Response<Object> findAllShop(
+            @RequestParam(required = false,defaultValue = "") String orderCondition,
+            @RequestParam(required = false,defaultValue = "") String address,
+            @RequestParam(required = false,defaultValue = "") String keyword,
+            Pageable pageable
     ) {
+        Map<String, Object> all = shopService.findShopListForAdmin(orderCondition, address, keyword, pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, all);
+    }
 
-        Shop savedShop = shopService.save(userId,shopRegisterDto);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING, savedShop);
+    // 상점 상세 페이지
+    @GetMapping(value = "/shop/detail")
+    public Response<Object> getShopDetail(
+            @RequestParam Long shopId
+    ) {
+        Map<String, Object> result = shopService.getShopDetail(shopId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, result);
     }
 
     // 상점 수정
@@ -203,14 +213,52 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 
-    // 상점 상세
-    @GetMapping(value = "/shop/findone")
-    public Response<Object> findOneShop(
+    // 상점 상세 페이지 통합주문내역
+    @GetMapping(value = "/shop/orders/history")
+    public Response<Object> getShopOrderHistory(
             @RequestParam Long shopId
     ) {
-        Shop byId = shopService.findById(shopId);
-        return new Response(ResultCode.DATA_NORMAL_PROCESSING, byId);
+        Map<String, Object> result = ordersService.findShopStatistics(shopId);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, result);
     }
+
+    // 상점통합 주문 조회
+    @GetMapping(value = "/shop/orders/list")
+    public Response<Object> findShopOrderHistory(
+            @RequestParam Long shopId,
+            @RequestParam(required = false) String startDt,
+            @RequestParam(required = false) String endDt,
+            @RequestParam(required = false, defaultValue = "all") String orderStatus,
+            Pageable pageable
+    ) {
+        OrderStatus status = OrderStatus.of(orderStatus);
+        Map<String, Object> result = ordersService.findShopOrdersHistory(shopId, startDt, endDt, status, pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, result );
+    }
+
+
+    // 상점 등록 (어드민 가입)
+    @PostMapping(value = "/shop/save/byadmin")
+    public Response<Object> saveShopByAdmin(
+            long userId,
+            ShopRegisterDto shopRegisterDto
+    ) {
+        Shop savedShop = shopService.save(userId,shopRegisterDto);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, savedShop);
+    }
+
+    // 상점페이지 상품관리
+    @GetMapping(value = "/shop/product/list")
+    public Response<Object> findShopProduct(
+            @RequestParam Long shopId,
+            Pageable pageable
+    ) {
+        List<Product> result = productService.findAllByShopIdEqualsForAdmin(shopId, pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, result );
+    }
+
+
+
 
     // 상점 삭제 (상품 모두 삭제, 상품의 옵션들 모두삭제)
     @GetMapping(value = "/shop/delete")

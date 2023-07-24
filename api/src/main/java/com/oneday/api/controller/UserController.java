@@ -79,9 +79,10 @@ public class UserController {
     // 상점별 상품 리스트
     @GetMapping(value = "/product/findall")
     public Response<Object> findAllProduct(
-            Long shopId
+            Long shopId,
+            Pageable pageable
     ) {
-        List<Product> allByShopIdEquals = productService.findAllByShopIdEquals(shopId);
+        List<Product> allByShopIdEquals = productService.findAllByShopIdEqualsForAdmin(shopId, pageable);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,  allByShopIdEquals);
     }
 

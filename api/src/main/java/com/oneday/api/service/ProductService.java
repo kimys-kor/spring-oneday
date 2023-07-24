@@ -5,6 +5,7 @@ import com.oneday.api.model.base.ProductCategory;
 import com.oneday.api.model.dto.ProductRegisterDto;
 import com.oneday.api.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,9 +47,14 @@ public class ProductService {
         return productRepository.findById(productId).orElse(null);
     }
 
-    // shopId로 찾기
-    public List<Product> findAllByShopIdEquals(Long shopId) {
-        return productRepository.findAllByShopIdEquals(shopId);
+    // shop 삭제시 product 삭제
+    public List<Product> findAllByShopIdEqualsForDelete(Long shopId) {
+        return productRepository.findAllByShopIdEqualsForDelete(shopId);
+    }
+
+    // shop 이름으로 찾기
+    public List<Product> findAllByShopIdEqualsForAdmin(Long shopId, Pageable pageable) {
+        return productRepository.findAllByShopIdEqualsForAdmin(shopId, pageable);
     }
 
     // category로 찾기

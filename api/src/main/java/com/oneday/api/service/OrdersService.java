@@ -38,6 +38,7 @@ public class OrdersService {
         return ordersRepository.save(orders);
     }
 
+
     public Orders save(Long userId, OrdersDto dto) {
         // 가격 안맞을시 에러 처리
         boolean calResult = calculatePrice(dto);
@@ -131,7 +132,7 @@ public class OrdersService {
     }
 
     public Page<OrdersReadDto> findAll(String startDt, String endDt, OrderStatus orderStatus, Pageable pageable) {
-        return ordersCustomRepository.findAll(null,startDt,endDt,orderStatus,pageable);
+        return ordersCustomRepository.findAllByUserId(null,startDt,endDt,orderStatus,pageable);
     }
 
     // 주문 상태 변경
@@ -271,7 +272,41 @@ public class OrdersService {
     public Map<String, Object> findUserOrdersHistory(Long userId, String startDt, String endDt,
                                                      OrderStatus orderStatus, Pageable pageable) {
 
-        Page<OrdersReadDto> pageObject = ordersCustomRepository.findAll(userId, startDt, endDt, orderStatus, pageable);
+        Page<OrdersReadDto> pageObject = ordersCustomRepository.findAllByUserId(userId, startDt, endDt, orderStatus, pageable);
+        List<OrdersReadDto> content = pageObject.getContent();
+        long totalElements = pageObject.getTotalElements();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("ordersList", content);
+        result.put("totalItem", totalElements);
+        return result;
+    }
+
+    // 상점관리 페이지 통합주문내역
+    public Map<String, Object> findShopStatistics(Long shopId) {
+        Integer totalOrders = ordersRepository.countAllByUserIdEquals(shopId);
+        Integer waiting = ordersRepository.countAllByShopIdAndOrderStatusEquals(shopId, OrderStatus.WAITING);
+        Integer complete = ordersRepository.countAllByShopIdAndOrderStatusEquals(shopId, OrderStatus.COMPLETE);
+        Integer change = ordersRepository.countAllByShopIdAndOrderStatusEquals(shopId, OrderStatus.CHANGE);
+        Integer cancel = ordersRepository.countAllByShopIdAndOrderStatusEquals(shopId, OrderStatus.CANCEL);
+        Integer totalPrice = ordersRepository.getShopOrdersTotal(shopId, OrderStatus.COMPLETE).orElse(0);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("totalOrders", totalOrders);
+        map.put("waiting", waiting);
+        map.put("complete", complete);
+        map.put("change", change);
+        map.put("cancel", cancel);
+        map.put("totalPrice", totalPrice);
+
+        return map;
+    }
+
+    // 상점관리 페이지 통합주문내역  통합주문조회
+    public Map<String, Object> findShopOrdersHistory(Long shopId, String startDt, String endDt,
+                                                     OrderStatus orderStatus, Pageable pageable) {
+
+        Page<OrdersReadDto> pageObject = ordersCustomRepository.findAllByShopId(shopId, startDt, endDt, orderStatus, pageable);
         List<OrdersReadDto> content = pageObject.getContent();
         long totalElements = pageObject.getTotalElements();
 

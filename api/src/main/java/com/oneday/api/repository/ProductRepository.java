@@ -1,6 +1,7 @@
 package com.oneday.api.repository;
 
 import com.oneday.api.model.Product;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +15,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "select * " +
             "from product " +
             "where shop_id = :shopId",nativeQuery = true)
-    List<Product> findAllByShopIdEquals(@Param("shopId") Long shopId);
+    List<Product> findAllByShopIdEqualsForDelete(@Param("shopId") Long shopId);
+
+    @Query(value = "select * " +
+            "from product " +
+            "where shop_id = :shopId",nativeQuery = true)
+    List<Product> findAllByShopIdEqualsForAdmin(@Param("shopId") Long shopId, Pageable pageable);
 
 
 

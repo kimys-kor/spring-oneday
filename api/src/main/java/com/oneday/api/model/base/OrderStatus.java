@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum OrderStatus {
+    All("all"),
     WAITING("waiting"),
     PREPAIRING("preparing"),
     CANTAKE("cantake"),
