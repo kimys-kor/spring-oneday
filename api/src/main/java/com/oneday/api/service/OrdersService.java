@@ -4,6 +4,8 @@ import com.oneday.api.model.*;
 import com.oneday.api.model.base.OrderStatus;
 import com.oneday.api.model.dto.OrdersDto;
 import com.oneday.api.model.dto.OrdersReadDto;
+import com.oneday.api.model.dto.StatisticsOrdersCountDto;
+import com.oneday.api.model.dto.StatisticsOrdersSumDto;
 import com.oneday.api.repository.OrdersCustomRepository;
 import com.oneday.api.repository.OrdersRepository;
 import jakarta.persistence.EntityManager;
@@ -364,6 +366,24 @@ public class OrdersService {
         Map<String, Object> result = new HashMap<>();
         result.put("ordersList", content);
         result.put("totalItem", totalElements);
+        return result;
+    }
+
+    public Map<String, Object> statisticsOrdersCount(String startDt, String endDt, OrderStatus ordersStats,Pageable pageable) {
+
+        Page<StatisticsOrdersCountDto> pageObject = ordersCustomRepository.statisticsOrdersCount(startDt, endDt, ordersStats, pageable);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("chartData", pageObject.getContent());
+        return result;
+    }
+
+    public Map<String, Object> statisticsOrdersSum(String startDt, String endDt, OrderStatus ordersStats,Pageable pageable) {
+
+        Page<StatisticsOrdersSumDto> pageObject = ordersCustomRepository.statisticsOrdersSum(startDt, endDt, ordersStats, pageable);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("chartData", pageObject.getContent());
         return result;
     }
 }

@@ -469,8 +469,46 @@ public class AdminController {
         return new Response(ResultCode.DATA_NORMAL_PROCESSING, updatedOrders);
     }
 
-    // 가게
+    // 주문관리 페이지
+    @GetMapping(value = "/orders/list")
+    public Response<Map<String, Object>> ordersList(
+            @RequestParam(required = false, defaultValue = "")String startDt,
+            @RequestParam(required = false, defaultValue = "")String endDt,
+            Pageable pageable) {
 
+        Page<OrdersReadDto> all = ordersService.findAll(startDt, endDt, OrderStatus.All, pageable);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalItem", all.getTotalElements());
+        result.put("orders", all.getContent());
+
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, result);
+    }
+    
+    // 정산 페이지 주문건수 통계
+    @GetMapping(value = "/statistics/orders/count")
+    public Response<Map<String, Object>> statisticsOrdersCount(
+            @RequestParam(required = false, defaultValue = "")String startDt,
+            @RequestParam(required = false, defaultValue = "")String endDt,
+            @RequestParam(required = false, defaultValue = "all")String ordersStats,
+            Pageable pageable) {
+
+        OrderStatus status = OrderStatus.of(ordersStats);
+        Map<String, Object> chartData = ordersService.statisticsOrdersCount(startDt, endDt, status, pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, chartData);
+    }
+
+    @GetMapping(value = "/statistics/orders/sum")
+    public Response<Map<String, Object>> statisticsOrdersSum(
+            @RequestParam(required = false, defaultValue = "")String startDt,
+            @RequestParam(required = false, defaultValue = "")String endDt,
+            @RequestParam(required = false, defaultValue = "all")String ordersStats,
+            Pageable pageable) {
+
+        OrderStatus status = OrderStatus.of(ordersStats);
+        Map<String, Object> chartData = ordersService.statisticsOrdersSum(startDt, endDt, status, pageable);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING, chartData);
+    }
 
 
 

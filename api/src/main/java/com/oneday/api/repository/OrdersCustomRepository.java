@@ -2,10 +2,14 @@ package com.oneday.api.repository;
 
 import com.oneday.api.model.base.OrderStatus;
 import com.oneday.api.model.dto.OrdersReadDto;
+import com.oneday.api.model.dto.StatisticsOrdersCountDto;
+import com.oneday.api.model.dto.StatisticsOrdersSumDto;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.ConstantImpl;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,6 +28,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.oneday.api.model.QOrders.orders;
+import static com.oneday.api.model.QRider.rider;
+import static com.oneday.api.model.QShop.shop;
 import static com.oneday.api.model.QUserAddress.userAddress;
 import static com.oneday.api.model.QUser.user;
 
@@ -160,6 +166,74 @@ public class OrdersCustomRepository {
 
 
         List<OrdersReadDto> data = results.getResults();
+
+
+        long total = results.getTotal();
+        return new PageImpl<>(data, pageable, total);
+    }
+
+    public Page<StatisticsOrdersCountDto> statisticsOrdersCount(String startDt, String endDt, OrderStatus orderStatus, Pageable pageable) {
+
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        StringExpression formattedDate = Expressions.stringTemplate(
+                "DATE_FORMAT({0}, {1})"
+                , orders.createdDt
+                , ConstantImpl.create("%Y.%m.%d %H:%i:%s")).as("createdDt");
+
+
+        QueryResults<StatisticsOrdersCountDto> results = queryFactory.select(Projections.fields(StatisticsOrdersCountDto.class,
+                        shop.name.as("shopName"),
+                        orders.count().as("count")
+                ))
+                .from(orders)
+                .leftJoin(shop).on(shop.id.eq(orders.shopId))
+                .where(
+                        dateIn(startDt,endDt),
+                        statusFilter(orderStatus)
+                )
+                .groupBy(orders.shopId)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+
+        List<StatisticsOrdersCountDto> data = results.getResults();
+
+
+        long total = results.getTotal();
+        return new PageImpl<>(data, pageable, total);
+    }
+
+    public Page<StatisticsOrdersSumDto> statisticsOrdersSum(String startDt, String endDt, OrderStatus orderStatus, Pageable pageable) {
+
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        StringExpression formattedDate = Expressions.stringTemplate(
+                "DATE_FORMAT({0}, {1})"
+                , orders.createdDt
+                , ConstantImpl.create("%Y.%m.%d %H:%i:%s")).as("createdDt");
+
+
+        QueryResults<StatisticsOrdersSumDto> results = queryFactory.select(Projections.fields(StatisticsOrdersSumDto.class,
+                        shop.name.as("shopName"),
+                        orders.price.sum().as("price")
+                ))
+                .from(orders)
+                .leftJoin(shop).on(shop.id.eq(orders.shopId))
+                .where(
+                        dateIn(startDt,endDt),
+                        statusFilter(orderStatus)
+                )
+                .groupBy(orders.shopId)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+
+        List<StatisticsOrdersSumDto> data = results.getResults();
 
 
         long total = results.getTotal();
