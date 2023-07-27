@@ -63,7 +63,7 @@ public class SecurityConfig  {
         public void configure(HttpSecurity http) throws Exception {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             JwtAuthenticationFilter filter = new JwtAuthenticationFilter(authenticationManager, userRepository);
-            filter.setFilterProcessesUrl("/auth/login");
+            filter.setFilterProcessesUrl("/api/login");
 
             http
                     .addFilter(corsConfig.corsFilter())
