@@ -1,6 +1,7 @@
 package com.oneday.api.controller;
 
 
+import com.oneday.api.common.UserCheck;
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
 
@@ -42,8 +43,16 @@ public class UserController {
     private final UserShopCouponService userShopCouponService;
 
 
+    @GetMapping(value = "/check")
+    public Response<Object> findAllShop(
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
+        User user = principalDetailis.getUser();
 
-
+        if(user == null) return new Response<>( ResultCode.AUTH_PERMISSION_DENY);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+    }
 
     @PostMapping(value = "/join")
     public Response<Object> join(
@@ -70,7 +79,6 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
         User user = principalDetailis.getUser();
-
 
         Page<ShopReadDto> shopList = shopService.findShopList(user.getId(), lat,lon, orderCondition, distance, keyword, pageable);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING, shopList);
