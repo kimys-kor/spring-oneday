@@ -5,9 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.oneday.api.common.exception.CustomException;
 import com.oneday.api.common.exception.ErrorCode;
-import com.oneday.api.common.exception.TokenValidationException;
 import com.oneday.api.common.security.PrincipalDetails;
 import com.oneday.api.model.User;
 import com.oneday.api.repository.UserRepository;
@@ -37,13 +35,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String header = request.getHeader(JwtProperties.HEADER_STRING);
-        if (header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
+        String Authorization = request.getHeader(JwtProperties.HEADER_STRING);
+        if (Authorization == null || !Authorization.startsWith(JwtProperties.TOKEN_PREFIX)) {
             chain.doFilter(request, response);
             return;
         }
 
-        String token = header.replace(JwtProperties.TOKEN_PREFIX, "");
+        String token = Authorization.replace(JwtProperties.TOKEN_PREFIX, "");
 
         try {
             String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
@@ -72,9 +70,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 
         } catch (TokenExpiredException e) {
-            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.name());
+            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN);
         } catch (JWTVerificationException e) {
-            request.setAttribute("exception", ErrorCode.INVALID_TOKEN.name());
+            request.setAttribute("exception", ErrorCode.INVALID_TOKEN);
         }
         chain.doFilter(request, response);
     }
