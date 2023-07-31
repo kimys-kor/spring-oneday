@@ -70,9 +70,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 
         } catch (TokenExpiredException e) {
-            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN);
+            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.name());
         } catch (JWTVerificationException e) {
-            request.setAttribute("exception", ErrorCode.INVALID_TOKEN);
+            request.setAttribute("exception", ErrorCode.INVALID_TOKEN.name());
         }
         chain.doFilter(request, response);
     }

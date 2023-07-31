@@ -17,7 +17,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        String exception = request.getAttribute("exception").toString();
+        String exception = (String)request.getAttribute("exception");
+
+        System.out.println(request.getAttribute("exception")+"22ll");
 
         if(exception == null) {
             setResponse(response, ErrorCode.UNKNOWN_ERROR);
