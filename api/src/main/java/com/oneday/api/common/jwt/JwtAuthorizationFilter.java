@@ -3,7 +3,11 @@ package com.oneday.api.common.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.oneday.api.common.exception.UserNotFoundException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.oneday.api.common.exception.CustomException;
+import com.oneday.api.common.exception.ErrorCode;
+import com.oneday.api.common.exception.TokenValidationException;
 import com.oneday.api.common.security.PrincipalDetails;
 import com.oneday.api.model.User;
 import com.oneday.api.repository.UserRepository;
@@ -19,7 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 // 인가
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -40,21 +43,17 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-        String token = request.getHeader(JwtProperties.HEADER_STRING)
-                .replace(JwtProperties.TOKEN_PREFIX, "");
+        String token = header.replace(JwtProperties.TOKEN_PREFIX, "");
 
-        // 토큰 검증 (인증이기 때문에 AuthenticationManager도 필요 없음)
-        // 내가 SecurityContext에 집적접근해서 세션을 만들때 자동으로 UserDetailsService에 있는
-        // loadByUsername이 호출됨.
         try {
-            String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
-                    .getClaim("username").asString();
+            String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
+                    .build()
+                    .verify(token)
+                    .getClaim("username")
+                    .asString();
 
             if (username != null) {
-
                 User user = userRepository.findByEmail(username).orElseThrow();
-
-
 
                 // 인증은 토큰 검증시 끝. 인증을 하기 위해서가 아닌 스프링 시큐리티가 수행해주는 권한 처리를 위해
                 // 아래와 같이 토큰을 만들어서 Authentication 객체를 강제로 만들고 그걸 세션에 저장!
@@ -67,15 +66,17 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
                 // 강제로 시큐리티의 세션에 접근하여 값 저장
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                throw new ServletException("Invalid token: Username claim is missing.");
             }
 
-            chain.doFilter(request, response);
-        } catch (Exception e) {
-            throw new UserNotFoundException("존재하지 않는 회원입니다");
+
+        } catch (TokenExpiredException e) {
+            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.name());
+        } catch (JWTVerificationException e) {
+            request.setAttribute("exception", ErrorCode.INVALID_TOKEN.name());
         }
-
-
-
+        chain.doFilter(request, response);
     }
 
 }

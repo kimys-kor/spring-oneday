@@ -48,6 +48,9 @@ public class SecurityConfig  {
                         .requestMatchers("/admin/**")
                         .access("hasRole('ROLE_ADMIN')")
                         .anyRequest().permitAll())
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .and()
                 .build();
     }
 

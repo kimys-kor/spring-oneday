@@ -44,7 +44,7 @@ public class UserController {
 
 
     @GetMapping(value = "/check")
-    public Response<Object> findAllShop(
+    public Response<Object> userCheck(
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
