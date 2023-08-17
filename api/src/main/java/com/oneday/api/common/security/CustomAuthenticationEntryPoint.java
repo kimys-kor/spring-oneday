@@ -22,7 +22,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         System.out.println(request.getAttribute("exception")+"22ll");
 
         if(exception == null) {
-            setResponse(response, ErrorCode.UNKNOWN_ERROR);
+            setResponse(response, ErrorCode.AUTHENTICATION_FAILED);
         }
         //잘못된 타입의 토큰인 경우
         else if(exception.equals(ErrorCode.INVALID_TOKEN.name())) {
