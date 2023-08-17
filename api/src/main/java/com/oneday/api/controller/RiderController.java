@@ -3,7 +3,6 @@ package com.oneday.api.controller;
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
 import com.oneday.api.model.Orders;
-import com.oneday.api.model.Rider;
 import com.oneday.api.service.OrdersService;
 import com.oneday.api.service.RiderService;
 import lombok.RequiredArgsConstructor;

@@ -7,14 +7,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.List;
 
 
@@ -36,10 +40,10 @@ public class SecurityConfig  {
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
-                .apply(new MyCustomDsl(userRepository)) // 커스텀 필터 등록
+                .apply(new MyCustomDsl()) // 커스텀 필터 등록
                 .and()
                 .authorizeRequests(authroize -> authroize
-                        .requestMatchers("/user/login")
+                        .requestMatchers("/user/login","/user/join")
                         .access("permitAll()")
                         .requestMatchers("/user/**")
                         .access("hasRole('ROLE_USER') or hasRole('ROLE_SHOP') or hasRole('ROLE_ADMIN')")
@@ -55,30 +59,31 @@ public class SecurityConfig  {
     }
 
 
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration
+                                                        authenticationConfiguration) throws Exception{
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+
     public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
-        private final UserRepository userRepository;
-
-        public MyCustomDsl(UserRepository userRepository) {
-            this.userRepository = userRepository;
-        }
-
         @Override
         public void configure(HttpSecurity http) throws Exception {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-            JwtAuthenticationFilter filter = new JwtAuthenticationFilter(authenticationManager, userRepository);
-            filter.setFilterProcessesUrl("/api/login");
-
             http
                     .addFilter(corsConfig.corsFilter())
-                    .addFilter(filter) // Use the created JwtAuthenticationFilter
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager,userRepository))
                     .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository));
         }
     }
 
     @Bean
-    public BCryptPasswordEncoder encoderPwd() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-
+    @Bean
+    public SecureRandom secureRandom() throws NoSuchAlgorithmException {
+        return SecureRandom.getInstanceStrong();
+    }
 }

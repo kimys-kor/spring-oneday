@@ -1,35 +1,39 @@
 package com.oneday.api.controller;
 
-
-import com.oneday.api.common.UserCheck;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.oneday.api.common.jwt.JwtProperties;
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
-
 import com.oneday.api.common.security.PrincipalDetails;
 import com.oneday.api.model.*;
 import com.oneday.api.model.base.OrderStatus;
 import com.oneday.api.model.dto.*;
 import com.oneday.api.service.*;
 import io.micrometer.observation.Observation;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 
+    private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final ShopService shopService;
     private final ShopLikeService shopLikeService;
@@ -42,8 +46,7 @@ public class UserController {
     private final UserBasketProductService userBasketProductService;
     private final UserShopCouponService userShopCouponService;
 
-
-    @GetMapping(value = "/check")
+    @GetMapping(value = "/token-check")
     public Response<Object> userCheck(
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -51,6 +54,31 @@ public class UserController {
         User user = principalDetailis.getUser();
 
         if(user == null) return new Response<>( ResultCode.AUTH_PERMISSION_DENY);
+        return new Response(ResultCode.DATA_NORMAL_PROCESSING);
+    }
+
+    @PostMapping(value = "/login")
+    public Response<Object> login(
+            @RequestBody LoginRequestDto loginRequestDto,
+            HttpServletResponse response
+    ) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(
+                        loginRequestDto.getEmail(),
+                        loginRequestDto.getPassword());
+
+        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        PrincipalDetails principalDetailis = (PrincipalDetails) authenticate.getPrincipal();
+
+        String jwtToken = JWT.create()
+                .withSubject(principalDetailis.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME))
+                .withClaim("id", principalDetailis.getUser().getId())
+                .withClaim("username", principalDetailis.getUser().getEmail())
+                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+
+        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
+
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 
@@ -106,9 +134,6 @@ public class UserController {
         Observation.CheckedCallable<String, Throwable> stringThrowableCheckedCallable = () -> "hello world!";
         return new Response(ResultCode.DATA_NORMAL_PROCESSING, productOptions);
     }
-
-
-
 
     // 주문 하기
     @PostMapping(value = "/orders/save")
@@ -377,5 +402,4 @@ public class UserController {
 
         return new Response(ResultCode.DATA_NORMAL_PROCESSING,result);
     }
-
 }

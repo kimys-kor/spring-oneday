@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +32,7 @@ public class UserService {
     @PersistenceContext
     EntityManager em;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
 
@@ -72,7 +72,7 @@ public class UserService {
     }
 
     public void join(UserDto userDto) {
-        String encPassword = bCryptPasswordEncoder.encode(userDto.getPassword());
+        String encPassword = passwordEncoder.encode(userDto.getPassword());
         userDto.setPassword(encPassword);
         User user = new User(userDto.getEmail(), userDto.getPassword(), userDto.getNickname(), userDto.getPhoneNum());
         userRepository.save(user);
@@ -116,7 +116,7 @@ public class UserService {
             tempNum =  Integer.toString(temp);
             resultNum += tempNum;
         }
-        String encPassword = bCryptPasswordEncoder.encode(resultNum);
+        String encPassword = passwordEncoder.encode(resultNum);
         User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
         user.setPassword(encPassword);
         em.flush();

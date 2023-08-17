@@ -1,0 +1,10 @@
+# MySQL8 설정
+spring:
+  datasource:
+    username: root
+    password: beaverking
+
+app:
+  jwt:
+    secret-key: 코카콜라마싰따
+    time-to-live: 1_800_000 # [millis]
