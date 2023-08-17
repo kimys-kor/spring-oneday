@@ -2,6 +2,7 @@ package com.oneday.api.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.oneday.api.common.exception.CustomException;
 import com.oneday.api.common.jwt.JwtProperties;
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
@@ -85,7 +86,7 @@ public class UserController {
     @PostMapping(value = "/join")
     public Response<Object> join(
             UserDto userDto
-    ) {
+    ) throws CustomException {
         userService.join(userDto);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }

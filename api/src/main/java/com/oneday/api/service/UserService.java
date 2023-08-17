@@ -1,5 +1,7 @@
 package com.oneday.api.service;
 
+import com.oneday.api.common.exception.CustomException;
+import com.oneday.api.common.exception.ErrorCode;
 import com.oneday.api.model.User;
 import com.oneday.api.model.UserMemo;
 import com.oneday.api.model.base.UserGrade;
@@ -71,11 +73,15 @@ public class UserService {
         return result;
     }
 
-    public void join(UserDto userDto) {
+    public void join(UserDto userDto) throws CustomException{
         String encPassword = passwordEncoder.encode(userDto.getPassword());
         userDto.setPassword(encPassword);
         User user = new User(userDto.getEmail(), userDto.getPassword(), userDto.getNickname(), userDto.getPhoneNum());
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
+        }
     }
 
     

@@ -15,6 +15,7 @@ public enum ErrorCode {
     INVALID_PARAMETER(HttpStatus.OK,1008, "파라미터 형식이 올바르지 않습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.OK,1008, "내부 서버 에러"),
     AUTHENTICATION_FAILED(HttpStatus.OK,1009, "유저 인증에 실패하였습니다"),
+    USER_ALREADY_EXIST(HttpStatus.OK,1010, "이미 존재하는 ID입니다"),
     ;
 
     public final HttpStatus status;
