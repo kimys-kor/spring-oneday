@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.oneday.api.common.exception.ErrorCode;
+import com.oneday.api.common.properties.JwtProperties;
 import com.oneday.api.common.security.PrincipalDetails;
 import com.oneday.api.model.User;
 import com.oneday.api.repository.UserRepository;
@@ -26,29 +27,30 @@ import java.io.IOException;
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private UserRepository userRepository;
+    private JwtProperties jwtProperties;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository,
+                                  JwtProperties jwtProperties, JwtTokenProvider jwtTokenProvider) {
         super(authenticationManager);
         this.userRepository = userRepository;
+        this.jwtProperties = jwtProperties;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String Authorization = request.getHeader(JwtProperties.HEADER_STRING);
-        if (Authorization == null || !Authorization.startsWith(JwtProperties.TOKEN_PREFIX)) {
+        String Authorization = request.getHeader(jwtProperties.headerString());
+        if (Authorization == null || !Authorization.startsWith(jwtProperties.tokenPrefix())) {
             chain.doFilter(request, response);
             return;
         }
 
-        String token = Authorization.replace(JwtProperties.TOKEN_PREFIX, "");
+        String token = Authorization.replace(jwtProperties.tokenPrefix(), "");
 
         try {
-            String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
-                    .build()
-                    .verify(token)
-                    .getClaim("username")
-                    .asString();
+            String username = jwtTokenProvider.resolveToken(token);
 
             if (username != null) {
                 User user = userRepository.findByEmail(username).orElseThrow();

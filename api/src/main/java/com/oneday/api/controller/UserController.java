@@ -3,7 +3,8 @@ package com.oneday.api.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.oneday.api.common.exception.CustomException;
-import com.oneday.api.common.jwt.JwtProperties;
+import com.oneday.api.common.jwt.JwtTokenProvider;
+import com.oneday.api.common.properties.JwtProperties;
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
 import com.oneday.api.common.security.PrincipalDetails;
@@ -34,7 +35,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final com.oneday.api.common.properties.JwtProperties haha;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProperties jwtProperties;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final ShopService shopService;
@@ -56,7 +58,6 @@ public class UserController {
         User user = principalDetailis.getUser();
 
         if(user == null) return new Response<>( ResultCode.AUTH_PERMISSION_DENY);
-        System.out.println(haha.secretKey() + "hihi");
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 
@@ -73,14 +74,9 @@ public class UserController {
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
         PrincipalDetails principalDetailis = (PrincipalDetails) authenticate.getPrincipal();
 
-        String jwtToken = JWT.create()
-                .withSubject(principalDetailis.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME))
-                .withClaim("id", principalDetailis.getUser().getId())
-                .withClaim("username", principalDetailis.getUser().getEmail())
-                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+        String jwtToken = jwtTokenProvider.generateToken(principalDetailis.getUser().getId(), principalDetailis.getUser().getEmail());
 
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
+        response.addHeader(jwtProperties.headerString(), jwtProperties.tokenPrefix()+jwtToken);
 
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }

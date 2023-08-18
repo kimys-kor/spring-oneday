@@ -8,16 +8,15 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesBindin
 @ConfigurationPropertiesBinding
 public record JwtProperties(
         String secretKey,
-
-        Long timeToLive,
+        Long expirationTime,
         String tokenPrefix,
         String headerString
 
 ) {
     public JwtProperties { // compact constructor
         // this -> null yet.
-        if (timeToLive == null) {
-            timeToLive = 1_200_000L;
+        if (expirationTime == null) {
+            expirationTime = 1_200_000L;
         }
     }
 }

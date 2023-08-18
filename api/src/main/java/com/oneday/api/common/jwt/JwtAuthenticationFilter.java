@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 
 
+import com.oneday.api.common.properties.JwtProperties;
 import com.oneday.api.common.security.PrincipalDetails;
 import com.oneday.api.model.dto.LoginRequestDto;
 import com.oneday.api.repository.UserRepository;
@@ -30,6 +31,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final JwtProperties jwtProperties;
+    private final JwtTokenProvider jwtTokenProvider;
 
 
 
@@ -82,14 +85,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         PrincipalDetails principalDetailis = (PrincipalDetails) authResult.getPrincipal();
 
-        String jwtToken = JWT.create()
-                .withSubject(principalDetailis.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
-                .withClaim("id", principalDetailis.getUser().getId())
-                .withClaim("username", principalDetailis.getUser().getEmail())
-                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+        String jwtToken = jwtTokenProvider.generateToken(principalDetailis.getUser().getId(), principalDetailis.getUser().getEmail());
 
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
+        response.addHeader(jwtProperties.headerString(), jwtProperties.tokenPrefix()+jwtToken);
     }
 
 }

@@ -2,6 +2,8 @@ package com.oneday.api.common.security;
 
 import com.oneday.api.common.jwt.JwtAuthenticationFilter;
 import com.oneday.api.common.jwt.JwtAuthorizationFilter;
+import com.oneday.api.common.jwt.JwtTokenProvider;
+import com.oneday.api.common.properties.JwtProperties;
 import com.oneday.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +31,8 @@ public class SecurityConfig  {
 
     private final UserRepository userRepository;
     private final CorsConfig corsConfig;
+    private final JwtProperties jwtProperties;
+    private final JwtTokenProvider jwtTokenProvider;
 
 
     @Bean
@@ -72,8 +76,8 @@ public class SecurityConfig  {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
                     .addFilter(corsConfig.corsFilter())
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager,userRepository))
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository));
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager, userRepository, jwtProperties, jwtTokenProvider))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository, jwtProperties, jwtTokenProvider));
         }
     }
 
