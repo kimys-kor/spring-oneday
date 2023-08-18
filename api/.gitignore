@@ -19,6 +19,7 @@ bin/
 
 
 
+src/main/resources/app/security/security.yml
 security.yml
 
 ### IntelliJ IDEA ###
