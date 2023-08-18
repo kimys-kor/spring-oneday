@@ -34,6 +34,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
 
+    private final com.oneday.api.common.properties.JwtProperties haha;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final ShopService shopService;
@@ -55,6 +56,7 @@ public class UserController {
         User user = principalDetailis.getUser();
 
         if(user == null) return new Response<>( ResultCode.AUTH_PERMISSION_DENY);
+        System.out.println(haha.secretKey() + "hihi");
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 

@@ -6,5 +6,8 @@ spring:
 
 app:
   jwt:
-    secret-key: 코카콜라마싰따
+    secret-key: 코카콜라마식따
     time-to-live: 1_800_000 # [millis]
+    token-prefix: Bearer
+    header-string: Authorization
+
