@@ -3,6 +3,7 @@ package com.oneday.api.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.oneday.api.common.exception.CustomException;
+import com.oneday.api.common.exception.ErrorCode;
 import com.oneday.api.common.jwt.JwtTokenProvider;
 import com.oneday.api.common.properties.JwtProperties;
 import com.oneday.api.common.random.StringSecureRandom;
@@ -15,6 +16,7 @@ import com.oneday.api.model.dto.*;
 import com.oneday.api.service.*;
 import io.micrometer.observation.Observation;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,10 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/user")
@@ -53,14 +52,20 @@ public class UserController {
     private final UserBasketProductService userBasketProductService;
     private final UserShopCouponService userShopCouponService;
 
-    @GetMapping(value = "/token-check")
-    public Response<Object> userCheck(
+    @GetMapping(value = "/refresh")
+    public Response<Object> userCheck (
+            HttpServletRequest request
     ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
-        User user = principalDetailis.getUser();
 
-        if(user == null) return new Response<>( ResultCode.AUTH_PERMISSION_DENY);
+        Cookie cookie = Arrays.stream(request.getCookies())
+                .filter((eachCookie) -> "refresh_token".equals(eachCookie.getName()))
+                .findAny()
+                .orElseThrow();
+
+        String oldRefreshToken = cookie.getValue();
+        System.out.println(oldRefreshToken+"리프레시토큰");
+
+
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 

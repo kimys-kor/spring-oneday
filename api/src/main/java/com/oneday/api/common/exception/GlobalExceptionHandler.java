@@ -1,8 +1,7 @@
 package com.oneday.api.common.exception;
 
-import com.oneday.api.common.exception.response.ApiError;
+import com.oneday.api.common.exception.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,10 +13,10 @@ import java.time.LocalDateTime;
 public final class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ApiError> handlerCustomException(CustomException exception) {
+    public ResponseEntity<ErrorResponse> handlerCustomException(CustomException exception) {
         // TODO use builder
         ErrorCode errorCode = exception.CODE;
-        ApiError response = new ApiError(
+        ErrorResponse response = new ErrorResponse(
                 errorCode.name(),
                 errorCode.status.value(),
                 exception.getClass().getName(),

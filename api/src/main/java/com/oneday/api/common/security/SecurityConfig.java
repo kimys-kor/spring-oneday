@@ -47,7 +47,7 @@ public class SecurityConfig  {
                 .apply(new MyCustomDsl()) // 커스텀 필터 등록
                 .and()
                 .authorizeRequests(authroize -> authroize
-                        .requestMatchers("/user/login","/user/join")
+                        .requestMatchers("/user/login","/user/join", "/user/refresh")
                         .access("permitAll()")
                         .requestMatchers("/user/**")
                         .access("hasRole('ROLE_USER') or hasRole('ROLE_SHOP') or hasRole('ROLE_ADMIN')")
