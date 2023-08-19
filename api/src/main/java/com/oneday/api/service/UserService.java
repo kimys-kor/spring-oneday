@@ -1,7 +1,7 @@
 package com.oneday.api.service;
 
-import com.oneday.api.common.exception.CustomException;
-import com.oneday.api.common.exception.ErrorCode;
+import com.oneday.api.common.exception.inteface.CustomException;
+import com.oneday.api.common.exception.AuthenticationErrorCode;
 import com.oneday.api.model.User;
 import com.oneday.api.model.UserMemo;
 import com.oneday.api.model.base.UserGrade;
@@ -80,7 +80,7 @@ public class UserService {
         try {
             userRepository.save(user);
         } catch (Exception e) {
-            throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
+            throw new CustomException(AuthenticationErrorCode.USER_ALREADY_EXIST);
         }
     }
 

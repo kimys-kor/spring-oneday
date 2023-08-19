@@ -1,6 +1,8 @@
 package com.oneday.api.common.exception;
 
-import com.oneday.api.common.exception.response.ErrorResponse;
+import com.oneday.api.common.exception.inteface.CustomException;
+import com.oneday.api.common.exception.inteface.ErrorCode;
+import com.oneday.api.common.exception.inteface.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,16 +17,16 @@ public final class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handlerCustomException(CustomException exception) {
         // TODO use builder
-        ErrorCode errorCode = exception.CODE;
+        ErrorCode errorCode = exception.errorCode;
         ErrorResponse response = new ErrorResponse(
                 errorCode.name(),
-                errorCode.status.value(),
+                errorCode.defaultHttpStatus().value(),
                 exception.getClass().getName(),
-                errorCode.message,
+                errorCode.defaultMessage(),
                 LocalDateTime.now()
         );
 
-        return new ResponseEntity<>(response, errorCode.status);
+        return new ResponseEntity<>(response, errorCode.defaultHttpStatus());
     }
 
 

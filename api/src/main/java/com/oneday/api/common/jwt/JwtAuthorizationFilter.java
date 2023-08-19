@@ -1,11 +1,9 @@
 package com.oneday.api.common.jwt;
 
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.oneday.api.common.exception.ErrorCode;
+import com.oneday.api.common.exception.AuthenticationErrorCode;
 import com.oneday.api.common.properties.JwtProperties;
 import com.oneday.api.common.security.PrincipalDetails;
 import com.oneday.api.model.User;
@@ -72,9 +70,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 
         } catch (TokenExpiredException e) {
-            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.name());
+            request.setAttribute("exception", AuthenticationErrorCode.EXPIRED_TOKEN.name());
         } catch (JWTVerificationException e) {
-            request.setAttribute("exception", ErrorCode.INVALID_TOKEN.name());
+            request.setAttribute("exception", AuthenticationErrorCode.INVALID_TOKEN.name());
         }
         chain.doFilter(request, response);
     }

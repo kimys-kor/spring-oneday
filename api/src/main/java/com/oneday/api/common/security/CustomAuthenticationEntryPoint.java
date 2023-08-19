@@ -1,6 +1,6 @@
 package com.oneday.api.common.security;
 
-import com.oneday.api.common.exception.ErrorCode;
+import com.oneday.api.common.exception.AuthenticationErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -22,32 +22,32 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         System.out.println(request.getAttribute("exception")+"22ll");
 
         if(exception == null) {
-            setResponse(response, ErrorCode.AUTHENTICATION_FAILED);
+            setResponse(response, AuthenticationErrorCode.AUTHENTICATION_FAILED);
         }
         //잘못된 타입의 토큰인 경우
-        else if(exception.equals(ErrorCode.INVALID_TOKEN.name())) {
-            setResponse(response, ErrorCode.INVALID_TOKEN);
+        else if(exception.equals(AuthenticationErrorCode.INVALID_TOKEN.name())) {
+            setResponse(response, AuthenticationErrorCode.INVALID_TOKEN);
         }
         //토큰 만료된 경우
-        else if(exception.equals(ErrorCode.EXPIRED_TOKEN.name())) {
-            setResponse(response, ErrorCode.EXPIRED_TOKEN);
+        else if(exception.equals(AuthenticationErrorCode.EXPIRED_TOKEN.name())) {
+            setResponse(response, AuthenticationErrorCode.EXPIRED_TOKEN);
         }
         //지원되지 않는 토큰인 경우
-        else if(exception.equals(ErrorCode.UNSUPPORTED_TOKEN.name())) {
-            setResponse(response, ErrorCode.UNSUPPORTED_TOKEN);
+        else if(exception.equals(AuthenticationErrorCode.UNSUPPORTED_TOKEN.name())) {
+            setResponse(response, AuthenticationErrorCode.UNSUPPORTED_TOKEN);
         }
         else {
-            setResponse(response, ErrorCode.ACCESS_DENIED);
+            setResponse(response, AuthenticationErrorCode.ACCESS_DENIED);
         }
     }
     //한글 출력을 위해 getWriter() 사용
-    private void setResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
+    private void setResponse(HttpServletResponse response, AuthenticationErrorCode authenticationErrorCode) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         JSONObject responseJson = new JSONObject();
-        responseJson.put("message", errorCode.getMessage());
-        responseJson.put("code", errorCode.getCode());
+        responseJson.put("message", authenticationErrorCode.getMessage());
+        responseJson.put("status", authenticationErrorCode.defaultHttpStatus());
 
         response.getWriter().print(responseJson);
     }

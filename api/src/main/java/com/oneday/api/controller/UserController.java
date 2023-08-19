@@ -1,9 +1,6 @@
 package com.oneday.api.controller;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.oneday.api.common.exception.CustomException;
-import com.oneday.api.common.exception.ErrorCode;
+import com.oneday.api.common.exception.inteface.CustomException;
 import com.oneday.api.common.jwt.JwtTokenProvider;
 import com.oneday.api.common.properties.JwtProperties;
 import com.oneday.api.common.random.StringSecureRandom;
