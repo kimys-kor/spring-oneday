@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.oneday.api.common.exception.CustomException;
 import com.oneday.api.common.jwt.JwtTokenProvider;
 import com.oneday.api.common.properties.JwtProperties;
+import com.oneday.api.common.random.StringSecureRandom;
 import com.oneday.api.common.response.Response;
 import com.oneday.api.common.response.ResultCode;
 import com.oneday.api.common.security.PrincipalDetails;
@@ -13,6 +14,7 @@ import com.oneday.api.model.base.OrderStatus;
 import com.oneday.api.model.dto.*;
 import com.oneday.api.service.*;
 import io.micrometer.observation.Observation;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,6 +38,7 @@ import java.util.Map;
 public class UserController {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final StringSecureRandom stringSecureRandom;
     private final JwtProperties jwtProperties;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
@@ -74,9 +77,19 @@ public class UserController {
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
         PrincipalDetails principalDetailis = (PrincipalDetails) authenticate.getPrincipal();
 
+        // access token 헤더 추가
         String jwtToken = jwtTokenProvider.generateToken(principalDetailis.getUser().getId(), principalDetailis.getUser().getEmail());
-
         response.addHeader(jwtProperties.headerString(), jwtProperties.tokenPrefix()+jwtToken);
+
+        // refresh token 쿠키 추가
+        String refreshToken = stringSecureRandom.next(20);
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setMaxAge(2_592_000);
+        cookie.setDomain("");
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+
 
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
