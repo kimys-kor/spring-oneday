@@ -33,8 +33,9 @@ import java.util.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final StringSecureRandom stringSecureRandom;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
     private final JwtProperties jwtProperties;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
@@ -50,19 +51,12 @@ public class UserController {
     private final UserShopCouponService userShopCouponService;
 
     @GetMapping(value = "/refresh")
-    public Response<Object> userCheck (
-            HttpServletRequest request
+    public Response<Object> refresh (
+            HttpServletRequest request,
+            HttpServletResponse response
     ) {
-
-        Cookie cookie = Arrays.stream(request.getCookies())
-                .filter((eachCookie) -> "refresh_token".equals(eachCookie.getName()))
-                .findAny()
-                .orElseThrow();
-
-        String oldRefreshToken = cookie.getValue();
-        System.out.println(oldRefreshToken+"리프레시토큰");
-
-
+        String accessToken = refreshTokenService.refresh(request);
+        response.addHeader(jwtProperties.headerString(), "Bearer "+accessToken);
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }
 
@@ -81,7 +75,7 @@ public class UserController {
 
         // access token 헤더 추가
         String jwtToken = jwtTokenProvider.generateToken(principalDetailis.getUser().getId(), principalDetailis.getUser().getEmail());
-        response.addHeader(jwtProperties.headerString(), jwtProperties.tokenPrefix()+jwtToken);
+        response.addHeader(jwtProperties.headerString(), "Bearer "+jwtToken);
 
         // refresh token 쿠키 추가
         String refreshToken = stringSecureRandom.next(20);
@@ -92,6 +86,8 @@ public class UserController {
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
 
+
+        refreshTokenService.save(principalDetailis.getUser().getEmail(), refreshToken);
 
         return new Response(ResultCode.DATA_NORMAL_PROCESSING);
     }

@@ -9,7 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesBindin
 public record JwtProperties(
         String secretKey,
         Long expirationTime,
-        String tokenPrefix,
         String headerString
 
 ) {

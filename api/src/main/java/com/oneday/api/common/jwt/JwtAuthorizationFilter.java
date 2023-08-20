@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -40,18 +41,19 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         String Authorization = request.getHeader(jwtProperties.headerString());
-        if (Authorization == null || !Authorization.startsWith(jwtProperties.tokenPrefix())) {
+        if (Authorization == null || !Authorization.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
         }
 
-        String token = Authorization.replace(jwtProperties.tokenPrefix(), "");
+        String token = Authorization.replace("Bearer ", "");
 
         try {
             String username = jwtTokenProvider.resolveToken(token);
 
             if (username != null) {
-                User user = userRepository.findByEmail(username).orElseThrow();
+                User user = userRepository.findByEmail(username).orElseThrow(()-> new AuthenticationException("없는 회원 입니다") {
+                });
 
                 // 인증은 토큰 검증시 끝. 인증을 하기 위해서가 아닌 스프링 시큐리티가 수행해주는 권한 처리를 위해
                 // 아래와 같이 토큰을 만들어서 Authentication 객체를 강제로 만들고 그걸 세션에 저장!

@@ -1,4 +1,4 @@
-package com.oneday.api.common.exception.inteface;
+package com.oneday.api.common.exception;
 
 import lombok.Builder;
 

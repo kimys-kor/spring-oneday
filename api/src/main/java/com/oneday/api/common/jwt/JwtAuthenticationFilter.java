@@ -30,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
     private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
     private final JwtProperties jwtProperties;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -87,7 +86,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String jwtToken = jwtTokenProvider.generateToken(principalDetailis.getUser().getId(), principalDetailis.getUser().getEmail());
 
-        response.addHeader(jwtProperties.headerString(), jwtProperties.tokenPrefix()+jwtToken);
+        response.addHeader(jwtProperties.headerString(), "Bearer "+jwtToken);
     }
 
 }
